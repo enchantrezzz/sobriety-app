@@ -1,0 +1,41 @@
+import { useMemo } from 'react'
+
+const GENTLE_QUOTES = [
+  "You don't have to be perfect. You just have to keep going.",
+  'Every moment you choose not to use, you are reclaiming your life.',
+  'Be gentle with yourself. Recovery is not a straight line.',
+  'You are not your addiction. You are so much more.',
+  'Small steps still move you forward.',
+  "Today doesn't have to be perfect. It just has to be today.",
+  'You have survived every hard day so far. That is 100%.',
+  'Healing happens slowly, quietly, and surely.',
+  "You are worth the effort you're putting in.",
+  'One breath. One moment. One choice. You can do this.',
+]
+
+const TOUGH_QUOTES = [
+  "Get up. You've been through worse.",
+  "Your future self is counting on the decision you make right now. Don't let them down.",
+  'Excuses are comfortable. Your old life was comfortable. Choose discomfort.',
+  'You want it? Then do the work. Every single day.',
+  'No one is coming to save you — and you are strong enough not to need saving.',
+  'The craving will pass. The regret of giving in lasts much longer.',
+  'Hard is not impossible.',
+  'You already know what giving in feels like. Try something different.',
+  "Champions do what they need to do even when they don't feel like it.",
+  'This moment will define you. Choose wisely.',
+]
+
+export default function MotivationalMessage({ tone = 'gentle' }) {
+  const quote = useMemo(() => {
+    const pool = tone === 'tough' ? TOUGH_QUOTES : GENTLE_QUOTES
+    const dayIndex = Math.floor(Date.now() / 86400000) % pool.length
+    return pool[dayIndex]
+  }, [tone])
+
+  return (
+    <div className="bg-gradient-to-br from-indigo-900/40 to-slate-800 rounded-2xl p-6 border border-indigo-500/20">
+      <p className="text-slate-200 text-base italic leading-relaxed">&quot;{quote}&quot;</p>
+    </div>
+  )
+}
