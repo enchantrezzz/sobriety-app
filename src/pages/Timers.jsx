@@ -240,7 +240,7 @@ function PostMortemModal({ timer, onConfirm, onCancel, submitting }) {
 
 // ── Delete confirm modal ────────────────────────────────────────
 function DeleteModal({ timer, onConfirm, onArchiveInstead, onCancel, deleting }) {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(onArchiveInstead ? 0 : 1)
   const [typed, setTyped] = useState('')
   const days = getElapsedDays(timer.started_at)
 
@@ -314,10 +314,10 @@ function DeleteModal({ timer, onConfirm, onArchiveInstead, onCancel, deleting })
             </div>
             <div className="flex gap-3">
               <button
-                onClick={() => { setStep(0); setTyped('') }}
+                onClick={() => onArchiveInstead ? (setStep(0), setTyped('')) : onCancel()}
                 className="flex-1 border border-slate-600 text-slate-300 hover:bg-slate-700 py-2.5 rounded-lg text-sm font-medium transition-colors"
               >
-                ← Go back
+                {onArchiveInstead ? '← Go back' : 'Cancel'}
               </button>
               <button
                 onClick={onConfirm}
@@ -393,6 +393,8 @@ export default function Timers() {
   const [archivedTimers, setArchivedTimers] = useState([])
   const [archiveLoading, setArchiveLoading] = useState(false)
   const [restoringId, setRestoringId] = useState(null)
+  const [archiveDeleteTarget, setArchiveDeleteTarget] = useState(null)
+  const [archiveDeleting, setArchiveDeleting] = useState(false)
 
   async function toggleArchive() {
     if (showArchive) { setShowArchive(false); return }
@@ -410,6 +412,18 @@ export default function Timers() {
       setArchivedTimers(prev => prev.filter(t => t.id !== timerId))
     } finally {
       setRestoringId(null)
+    }
+  }
+
+  async function handleArchiveDelete() {
+    if (!archiveDeleteTarget) return
+    setArchiveDeleting(true)
+    try {
+      await deleteTimer(archiveDeleteTarget.id)
+      setArchivedTimers(prev => prev.filter(t => t.id !== archiveDeleteTarget.id))
+      setArchiveDeleteTarget(null)
+    } finally {
+      setArchiveDeleting(false)
     }
   }
 
@@ -594,6 +608,17 @@ export default function Timers() {
         />
       )}
 
+      {/* ── Delete from archive ── */}
+      {archiveDeleteTarget && (
+        <DeleteModal
+          timer={archiveDeleteTarget}
+          deleting={archiveDeleting}
+          onConfirm={handleArchiveDelete}
+          onArchiveInstead={null}
+          onCancel={() => setArchiveDeleteTarget(null)}
+        />
+      )}
+
       {/* ── Archived timers section ── */}
       <div className="mt-8">
         <button
@@ -620,13 +645,22 @@ export default function Timers() {
                       Started {formatDate(t.started_at)} · {days} day{days !== 1 ? 's' : ''} at archive
                     </p>
                   </div>
-                  <button
-                    onClick={() => handleRestore(t.id)}
-                    disabled={restoringId === t.id}
-                    className="text-indigo-400 hover:text-indigo-300 disabled:opacity-50 text-xs font-medium border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-1.5 rounded-lg transition-colors"
-                  >
-                    {restoringId === t.id ? 'Restoring…' : 'Restore'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleRestore(t.id)}
+                      disabled={restoringId === t.id}
+                      className="text-indigo-400 hover:text-indigo-300 disabled:opacity-50 text-xs font-medium border border-indigo-500/30 hover:border-indigo-400/50 px-3 py-1.5 rounded-lg transition-colors"
+                    >
+                      {restoringId === t.id ? 'Restoring…' : 'Restore'}
+                    </button>
+                    <button
+                      onClick={() => setArchiveDeleteTarget(t)}
+                      className="text-slate-500 hover:text-red-400 text-xs border border-slate-700 hover:border-red-500/30 px-2.5 py-1.5 rounded-lg transition-colors"
+                      title="Delete permanently"
+                    >
+                      🗑️
+                    </button>
+                  </div>
                 </div>
               )
             })}
