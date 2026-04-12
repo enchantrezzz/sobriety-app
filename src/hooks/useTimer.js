@@ -35,10 +35,10 @@ export function useTimer() {
     fetchTimers()
   }, [fetchTimers])
 
-  async function addTimer(addictionName) {
+  async function addTimer(addictionName, startedAt = new Date().toISOString()) {
     const { data, error } = await supabase
       .from('timers')
-      .insert({ user_id: user.id, addiction_name: addictionName, started_at: new Date().toISOString() })
+      .insert({ user_id: user.id, addiction_name: addictionName, started_at: startedAt })
       .select()
       .single()
     if (error) throw error
@@ -75,5 +75,34 @@ export function useTimer() {
     setTimers(prev => prev.filter(t => t.id !== timerId))
   }
 
-  return { timers, loading, addTimer, resetTimer, archiveTimer, getElapsed, refetch: fetchTimers }
+  async function fetchArchivedTimers() {
+    if (!user) return []
+    const { data } = await supabase
+      .from('timers')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_active', false)
+      .order('created_at', { ascending: false })
+    return data ?? []
+  }
+
+  async function deleteTimer(timerId) {
+    await supabase.from('relapses').delete().eq('timer_id', timerId)
+    await supabase.from('timers').delete().eq('id', timerId)
+    setTimers(prev => prev.filter(t => t.id !== timerId))
+  }
+
+  async function restoreTimer(timerId) {
+    const { data, error } = await supabase
+      .from('timers')
+      .update({ is_active: true })
+      .eq('id', timerId)
+      .select()
+      .single()
+    if (error) throw error
+    setTimers(prev => [...prev, data])
+    return data
+  }
+
+  return { timers, loading, addTimer, resetTimer, archiveTimer, deleteTimer, fetchArchivedTimers, restoreTimer, getElapsed, refetch: fetchTimers }
 }
