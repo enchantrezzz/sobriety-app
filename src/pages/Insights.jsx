@@ -13,94 +13,53 @@ const SLICE_COLORS = [
   '#9BAF82', // light sage
 ]
 
-function polarToCartesian(cx, cy, r, angleDeg) {
-  const rad = ((angleDeg - 90) * Math.PI) / 180
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
-}
-
-function slicePath(cx, cy, r, startAngle, endAngle) {
-  const s = polarToCartesian(cx, cy, r, startAngle)
-  const e = polarToCartesian(cx, cy, r, endAngle)
-  const large = endAngle - startAngle > 180 ? 1 : 0
-  return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`
-}
-
-function PieChart({ data }) {
+function GradientRingChart({ data }) {
   const [hovered, setHovered] = useState(null)
   const total = data.reduce((s, d) => s + d.count, 0)
-  const cx = 110
-  const cy = 110
-  const r = 90
-  const rInner = 48
 
-  let angle = 0
-  const slices = data.map((d, i) => {
-    const sweep = (d.count / total) * 360
-    const start = angle
-    const end = angle + sweep
-    angle += sweep
-    return { ...d, start, end, color: SLICE_COLORS[i % SLICE_COLORS.length], pct: Math.round((d.count / total) * 100) }
-  })
+  const slices = data.map((d, i) => ({
+    ...d,
+    color: SLICE_COLORS[i % SLICE_COLORS.length],
+    pct: Math.round((d.count / total) * 100),
+  }))
 
-  function labelPos(start, end) {
-    const mid = (start + end) / 2
-    return polarToCartesian(cx, cy, r * 0.68, mid)
-  }
+  // Full 360° ring: colors are evenly spaced around the full circle
+  // regardless of segment size — purely decorative gradient.
+  const colors = slices.map(s => s.color)
+  const step = 360 / colors.length
+  const stops = colors.map((c, i) => `${c} ${(i * step).toFixed(1)}deg`)
+  stops.push(`${colors[0]} 360deg`)
+  const gradient = `conic-gradient(from -90deg, ${stops.join(', ')})`
+
+  const active = hovered !== null ? slices[hovered] : null
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-8">
-      {/* SVG chart */}
-      <div className="relative shrink-0">
-        <svg width={220} height={220} className="overflow-visible">
-          {slices.map((s, i) => (
-            <path
-              key={i}
-              d={slicePath(cx, cy, r, s.start, s.end)}
-              fill={s.color}
-              stroke="#FFFAF4"
-              strokeWidth={2}
-              opacity={hovered === null || hovered === i ? 1 : 0.4}
-              style={{ cursor: 'pointer', transition: 'opacity 0.15s, transform 0.15s', transformOrigin: `${cx}px ${cy}px`, transform: hovered === i ? 'scale(1.06)' : 'scale(1)' }}
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-            />
-          ))}
-
-          {/* Donut hole */}
-          <circle cx={cx} cy={cy} r={rInner} fill="#FFFAF4" />
-
-          {/* Centre text */}
-          {hovered !== null ? (
+      {/* Gradient ring */}
+      <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
+        <div
+          className="w-full h-full rounded-full"
+          style={{ background: gradient }}
+        />
+        {/* Donut hole */}
+        <div
+          className="absolute rounded-full bg-[#FFFAF4] flex flex-col items-center justify-center gap-0.5"
+          style={{ inset: '27%' }}
+        >
+          {active ? (
             <>
-              <text x={cx} y={cy - 8} textAnchor="middle" fill="#3D2B1F" fontSize={22} fontWeight="bold">
-                {slices[hovered].pct}%
-              </text>
-              <text x={cx} y={cy + 12} textAnchor="middle" fill="#8C7264" fontSize={10}>
-                {slices[hovered].category}
-              </text>
+              <span className="text-xl font-bold text-[#3D2B1F] leading-none">{active.pct}%</span>
+              <span className="text-[9px] text-[#8C7264] text-center leading-tight px-1 max-w-[70px] truncate">
+                {active.category}
+              </span>
             </>
           ) : (
             <>
-              <text x={cx} y={cy - 8} textAnchor="middle" fill="#3D2B1F" fontSize={22} fontWeight="bold">
-                {total}
-              </text>
-              <text x={cx} y={cy + 12} textAnchor="middle" fill="#8C7264" fontSize={10}>
-                total
-              </text>
+              <span className="text-xl font-bold text-[#3D2B1F] leading-none">{total}</span>
+              <span className="text-[10px] text-[#8C7264]">total</span>
             </>
           )}
-
-          {/* Percentage labels on slices */}
-          {slices.map((s, i) => {
-            if (s.pct < 8) return null
-            const pos = labelPos(s.start, s.end)
-            return (
-              <text key={i} x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={11} fontWeight="600" style={{ pointerEvents: 'none' }}>
-                {s.pct}%
-              </text>
-            )
-          })}
-        </svg>
+        </div>
       </div>
 
       {/* Legend */}
@@ -108,10 +67,10 @@ function PieChart({ data }) {
         {slices.map((s, i) => (
           <div
             key={i}
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer transition-opacity duration-150"
+            style={{ opacity: hovered === null || hovered === i ? 1 : 0.35 }}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
-            style={{ opacity: hovered === null || hovered === i ? 1 : 0.4, transition: 'opacity 0.15s' }}
           >
             <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
             <span className="text-[#5C4033] text-sm flex-1">{s.category}</span>
@@ -161,7 +120,7 @@ export default function Insights() {
         {topTriggers.length === 0 ? (
           <p className="text-[#8C7264] text-sm">No triggers logged yet.</p>
         ) : (
-          <PieChart data={topTriggers} />
+          <GradientRingChart data={topTriggers} />
         )}
       </div>
 
