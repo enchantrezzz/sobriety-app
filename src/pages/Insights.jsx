@@ -3,14 +3,14 @@ import { useTriggers } from '../hooks/useTriggers'
 import { useTimer } from '../hooks/useTimer'
 
 const SLICE_COLORS = [
-  '#6366f1', // indigo
-  '#f59e0b', // amber
-  '#10b981', // emerald
-  '#f43f5e', // rose
-  '#8b5cf6', // violet
-  '#06b6d4', // cyan
-  '#ec4899', // pink
-  '#84cc16', // lime
+  '#C17A47', // warm amber
+  '#7C9B6E', // sage green
+  '#C4956A', // warm peach
+  '#A0786E', // warm rose
+  '#8B7BA8', // soft purple
+  '#6BA6A9', // teal
+  '#C9845A', // terracotta
+  '#9BAF82', // light sage
 ]
 
 function polarToCartesian(cx, cy, r, angleDeg) {
@@ -31,7 +31,7 @@ function PieChart({ data }) {
   const cx = 110
   const cy = 110
   const r = 90
-  const rInner = 48 // donut hole
+  const rInner = 48
 
   let angle = 0
   const slices = data.map((d, i) => {
@@ -42,7 +42,6 @@ function PieChart({ data }) {
     return { ...d, start, end, color: SLICE_COLORS[i % SLICE_COLORS.length], pct: Math.round((d.count / total) * 100) }
   })
 
-  // Label position — midpoint of arc, pushed out slightly
   function labelPos(start, end) {
     const mid = (start + end) / 2
     return polarToCartesian(cx, cy, r * 0.68, mid)
@@ -58,7 +57,7 @@ function PieChart({ data }) {
               key={i}
               d={slicePath(cx, cy, r, s.start, s.end)}
               fill={s.color}
-              stroke="#1e293b"
+              stroke="#FFFAF4"
               strokeWidth={2}
               opacity={hovered === null || hovered === i ? 1 : 0.4}
               style={{ cursor: 'pointer', transition: 'opacity 0.15s, transform 0.15s', transformOrigin: `${cx}px ${cy}px`, transform: hovered === i ? 'scale(1.06)' : 'scale(1)' }}
@@ -68,30 +67,30 @@ function PieChart({ data }) {
           ))}
 
           {/* Donut hole */}
-          <circle cx={cx} cy={cy} r={rInner} fill="#1e293b" />
+          <circle cx={cx} cy={cy} r={rInner} fill="#FFFAF4" />
 
-          {/* Centre text — shows hovered slice or total */}
+          {/* Centre text */}
           {hovered !== null ? (
             <>
-              <text x={cx} y={cy - 8} textAnchor="middle" fill="white" fontSize={22} fontWeight="bold">
+              <text x={cx} y={cy - 8} textAnchor="middle" fill="#3D2B1F" fontSize={22} fontWeight="bold">
                 {slices[hovered].pct}%
               </text>
-              <text x={cx} y={cy + 12} textAnchor="middle" fill="#94a3b8" fontSize={10}>
+              <text x={cx} y={cy + 12} textAnchor="middle" fill="#8C7264" fontSize={10}>
                 {slices[hovered].category}
               </text>
             </>
           ) : (
             <>
-              <text x={cx} y={cy - 8} textAnchor="middle" fill="white" fontSize={22} fontWeight="bold">
+              <text x={cx} y={cy - 8} textAnchor="middle" fill="#3D2B1F" fontSize={22} fontWeight="bold">
                 {total}
               </text>
-              <text x={cx} y={cy + 12} textAnchor="middle" fill="#94a3b8" fontSize={10}>
+              <text x={cx} y={cy + 12} textAnchor="middle" fill="#8C7264" fontSize={10}>
                 total
               </text>
             </>
           )}
 
-          {/* Percentage labels on slices (only if slice is big enough) */}
+          {/* Percentage labels on slices */}
           {slices.map((s, i) => {
             if (s.pct < 8) return null
             const pos = labelPos(s.start, s.end)
@@ -115,8 +114,8 @@ function PieChart({ data }) {
             style={{ opacity: hovered === null || hovered === i ? 1 : 0.4, transition: 'opacity 0.15s' }}
           >
             <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
-            <span className="text-slate-300 text-sm flex-1">{s.category}</span>
-            <span className="text-slate-400 text-sm font-medium">{s.count}</span>
+            <span className="text-[#5C4033] text-sm flex-1">{s.category}</span>
+            <span className="text-[#8C7264] text-sm font-medium">{s.count}</span>
             <span className="text-xs font-semibold w-9 text-right" style={{ color: s.color }}>{s.pct}%</span>
           </div>
         ))}
@@ -129,7 +128,7 @@ export default function Insights() {
   const { triggers, loading: triggersLoading, getTopTriggers, getResistanceRate } = useTriggers()
   const { timers, loading: timersLoading, getElapsed } = useTimer()
 
-  if (triggersLoading || timersLoading) return <div className="p-8 text-slate-400">Loading…</div>
+  if (triggersLoading || timersLoading) return <div className="p-8 text-[#8C7264]">Loading…</div>
 
   const topTriggers = getTopTriggers(8)
   const resistRate = getResistanceRate()
@@ -145,22 +144,22 @@ export default function Insights() {
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8 max-w-2xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold text-white">Insights</h1>
+      <h1 className="text-2xl font-bold text-[#3D2B1F]">Insights</h1>
 
       {/* Resistance rate */}
       {resistRate !== null && (
-        <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 text-center">
-          <p className="text-slate-400 text-sm mb-2">Resistance rate</p>
-          <p className="text-5xl font-bold text-indigo-400">{resistRate}%</p>
-          <p className="text-slate-400 text-sm mt-2">of urges resisted ({triggers.length} total logged)</p>
+        <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)] text-center">
+          <p className="text-[#8C7264] text-sm mb-2">Resistance rate</p>
+          <p className="text-5xl font-bold text-[#C17A47]">{resistRate}%</p>
+          <p className="text-[#8C7264] text-sm mt-2">of urges resisted ({triggers.length} total logged)</p>
         </div>
       )}
 
       {/* Top triggers pie chart */}
-      <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-        <h2 className="text-lg font-semibold text-white mb-6">Top triggers</h2>
+      <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+        <h2 className="text-lg font-semibold text-[#3D2B1F] mb-6">Top triggers</h2>
         {topTriggers.length === 0 ? (
-          <p className="text-slate-400 text-sm">No triggers logged yet.</p>
+          <p className="text-[#8C7264] text-sm">No triggers logged yet.</p>
         ) : (
           <PieChart data={topTriggers} />
         )}
@@ -168,13 +167,13 @@ export default function Insights() {
 
       {/* Current streaks */}
       {streaks.length > 0 && (
-        <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-          <h2 className="text-lg font-semibold text-white mb-4">Current streaks</h2>
+        <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+          <h2 className="text-lg font-semibold text-[#3D2B1F] mb-4">Current streaks</h2>
           <div className="space-y-3">
             {streaks.map(({ name, days }) => (
               <div key={name} className="flex items-center justify-between">
-                <span className="text-slate-300 text-sm">{name}</span>
-                <span className="text-indigo-400 font-bold">{days} day{days !== 1 ? 's' : ''}</span>
+                <span className="text-[#5C4033] text-sm">{name}</span>
+                <span className="text-[#C17A47] font-bold">{days} day{days !== 1 ? 's' : ''}</span>
               </div>
             ))}
           </div>
@@ -183,14 +182,16 @@ export default function Insights() {
 
       {/* Personal toolkit */}
       {toolkit.length > 0 && (
-        <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-          <h2 className="text-lg font-semibold text-white mb-2">Your personal toolkit</h2>
-          <p className="text-slate-400 text-sm mb-4">Things that have helped you resist in the past.</p>
+        <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+          <h2 className="text-lg font-semibold text-[#3D2B1F] mb-2">Your personal toolkit</h2>
+          <p className="text-[#8C7264] text-sm mb-4">Things that have helped you resist in the past.</p>
           <div className="space-y-2">
             {toolkit.map((item, i) => (
               <div key={i} className="flex items-start gap-2">
-                <span className="text-green-400 mt-0.5">✓</span>
-                <span className="text-slate-300 text-sm">{item}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7C9B6E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mt-0.5 shrink-0">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span className="text-[#5C4033] text-sm">{item}</span>
               </div>
             ))}
           </div>
@@ -198,8 +199,12 @@ export default function Insights() {
       )}
 
       {triggers.length === 0 && streaks.length === 0 && (
-        <div className="text-center py-16 text-slate-400">
-          <p className="text-4xl mb-4">📊</p>
+        <div className="text-center py-16 text-[#8C7264]">
+          <div className="w-16 h-16 rounded-full bg-[#F5EDE0] flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+          </div>
           <p>Insights will appear as you log triggers and build streaks.</p>
         </div>
       )}

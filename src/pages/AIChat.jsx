@@ -135,32 +135,35 @@ export default function AIChat() {
   }
 
   if (sessionLoading) {
-    return <div className="flex items-center justify-center h-screen text-slate-400">Loading…</div>
+    return <div className="flex items-center justify-center h-screen text-[#8C7264] bg-[#FDF6EE]">Loading…</div>
   }
 
   return (
-    <div className="flex h-screen pb-16 md:pb-0 overflow-hidden">
+    <div className="flex h-screen pb-16 md:pb-0 overflow-hidden bg-[#FDF6EE]">
 
       {/* ── Chat area ── */}
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-700 bg-slate-900 shrink-0">
-          <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shrink-0">AI</div>
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#E8D9C8] bg-[#FFFAF4] shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[#C17A47]/15 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+          </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white font-semibold text-sm">Vent Space</p>
-            <p className="text-slate-400 text-xs">Judgment-free. Private.</p>
+            <p className="text-[#3D2B1F] font-semibold text-sm">Vent Space</p>
+            <p className="text-[#8C7264] text-xs">Judgment-free. Private.</p>
           </div>
           <button
             onClick={() => setCrisis(true)}
-            className="bg-red-600 hover:bg-red-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors shrink-0"
+            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors shrink-0 cursor-pointer"
           >
-            🆘 Help
+            Help
           </button>
-          {/* Toggle sidebar button — desktop only */}
           <button
             onClick={() => setSidebarOpen(o => !o)}
-            className="hidden md:flex items-center gap-1.5 text-slate-400 hover:text-white text-xs px-2.5 py-1.5 rounded-lg hover:bg-slate-700 transition-colors shrink-0"
+            className="hidden md:flex items-center gap-1.5 text-[#8C7264] hover:text-[#3D2B1F] text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#F5EDE0] transition-colors shrink-0 cursor-pointer"
             title={sidebarOpen ? 'Hide conversations' : 'Show conversations'}
           >
             <span>{sidebarOpen ? '→' : '←'}</span>
@@ -170,15 +173,15 @@ export default function AIChat() {
 
         {/* Crisis panel */}
         {crisis && (
-          <div className="bg-red-950/60 border-b border-red-800 px-4 py-4 space-y-3 shrink-0">
-            <p className="text-red-300 font-semibold text-sm">You don't have to go through this alone.</p>
-            <p className="text-red-200 text-xs font-medium">{CRISIS_LINE}</p>
+          <div className="bg-red-50 border-b border-red-200 px-4 py-4 space-y-3 shrink-0">
+            <p className="text-red-700 font-semibold text-sm">You don&apos;t have to go through this alone.</p>
+            <p className="text-red-600 text-xs font-medium">{CRISIS_LINE}</p>
             <div className="space-y-1">
               {GROUNDING_EXERCISES.map((ex, i) => (
-                <p key={i} className="text-red-100/80 text-xs">• {ex}</p>
+                <p key={i} className="text-red-500 text-xs">• {ex}</p>
               ))}
             </div>
-            <button onClick={() => setCrisis(false)} className="text-red-400 text-xs underline">Close</button>
+            <button onClick={() => setCrisis(false)} className="text-red-400 text-xs underline cursor-pointer">Close</button>
           </div>
         )}
 
@@ -188,8 +191,8 @@ export default function AIChat() {
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                 msg.role === 'user'
-                  ? 'max-w-[45%] bg-indigo-600 text-white rounded-br-sm'
-                  : 'max-w-[60%] bg-slate-800 text-slate-200 rounded-bl-sm'
+                  ? 'max-w-[45%] bg-[#C17A47] text-white rounded-br-sm'
+                  : 'max-w-[60%] bg-[#FFFAF4] text-[#3D2B1F] rounded-bl-sm border border-[#E8D9C8] shadow-[0_1px_4px_rgba(139,90,43,0.06)]'
               }`}>
                 {msg.content}
               </div>
@@ -197,7 +200,7 @@ export default function AIChat() {
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-slate-800 text-slate-400 px-4 py-3 rounded-2xl rounded-bl-sm text-sm">
+              <div className="bg-[#FFFAF4] text-[#8C7264] px-4 py-3 rounded-2xl rounded-bl-sm text-sm border border-[#E8D9C8]">
                 <span className="animate-pulse">Thinking…</span>
               </div>
             </div>
@@ -206,7 +209,7 @@ export default function AIChat() {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-slate-700 bg-slate-900 shrink-0">
+        <div className="px-4 py-3 border-t border-[#E8D9C8] bg-[#FFFAF4] shrink-0">
           <div className="flex gap-2">
             <textarea
               value={input}
@@ -214,36 +217,36 @@ export default function AIChat() {
               onKeyDown={handleKeyDown}
               placeholder="Talk to me…"
               rows={1}
-              className="flex-1 bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="flex-1 bg-[#F5EDE0] border border-[#DCC9B4] rounded-xl px-4 py-2.5 text-[#3D2B1F] placeholder-[#A69080] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47] resize-none"
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white rounded-xl px-4 text-sm font-semibold transition-colors"
+              className="bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-40 text-white rounded-xl px-4 text-sm font-semibold transition-colors cursor-pointer"
             >
               Send
             </button>
           </div>
-          <p className="text-slate-500 text-xs mt-2 text-center">Enter to send · Shift+Enter for new line</p>
+          <p className="text-[#A69080] text-xs mt-2 text-center">Enter to send · Shift+Enter for new line</p>
         </div>
       </div>
 
       {/* ── Right sidebar — desktop only ── */}
       <div className={`
-        hidden md:flex flex-col border-l border-slate-700 bg-slate-900
+        hidden md:flex flex-col border-l border-[#E8D9C8] bg-[#FFFAF4]
         transition-all duration-200 overflow-hidden shrink-0
         ${sidebarOpen ? 'w-64' : 'w-0 border-l-0'}
       `}>
         {sidebarOpen && (
           <>
-            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-700">
-              <span className="text-white font-semibold text-sm">Conversations</span>
+            <div className="flex items-center justify-between px-4 py-4 border-b border-[#E8D9C8]">
+              <span className="text-[#3D2B1F] font-semibold text-sm">Conversations</span>
             </div>
 
             <div className="px-3 py-3">
               <button
                 onClick={startNewSession}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-500 text-sm transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-[#DCC9B4] text-[#8C7264] hover:text-[#3D2B1F] hover:border-[#C17A47]/40 text-sm transition-colors cursor-pointer"
               >
                 + New conversation
               </button>
@@ -251,22 +254,22 @@ export default function AIChat() {
 
             <div className="flex-1 overflow-y-auto px-3 space-y-1">
               {sessions.length === 0 && (
-                <p className="text-slate-500 text-xs px-3 py-2">No past conversations.</p>
+                <p className="text-[#A69080] text-xs px-3 py-2">No past conversations.</p>
               )}
               {sessions.map(s => (
                 <button
                   key={s.id}
                   onClick={() => loadSession(s)}
-                  className={`w-full text-left px-3 py-3 rounded-lg transition-colors ${
+                  className={`w-full text-left px-3 py-3 rounded-lg transition-colors cursor-pointer ${
                     s.id === sessionId
-                      ? 'bg-indigo-600/20 border border-indigo-500/30'
-                      : 'hover:bg-slate-800'
+                      ? 'bg-[#C17A47]/10 border border-[#C17A47]/20'
+                      : 'hover:bg-[#F5EDE0]'
                   }`}
                 >
-                  <p className="text-slate-200 text-xs font-medium truncate leading-snug">
+                  <p className="text-[#5C4033] text-xs font-medium truncate leading-snug">
                     {sessionPreview(s.messages)}
                   </p>
-                  <p className="text-slate-500 text-xs mt-1">{formatDate(s.updated_at)}</p>
+                  <p className="text-[#A69080] text-xs mt-1">{formatDate(s.updated_at)}</p>
                 </button>
               ))}
             </div>

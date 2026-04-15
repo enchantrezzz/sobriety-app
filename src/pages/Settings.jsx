@@ -25,38 +25,38 @@ export default function Settings() {
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-white">Settings</h1>
+      <h1 className="text-2xl font-bold text-[#3D2B1F]">Settings</h1>
 
-      <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5">
+      <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)] space-y-5">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
-          <p className="text-slate-400 text-sm">{user?.email}</p>
+          <label className="block text-sm font-medium text-[#5C4033] mb-1">Email</label>
+          <p className="text-[#8C7264] text-sm">{user?.email}</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-3">Motivational tone</label>
+          <label className="block text-sm font-medium text-[#5C4033] mb-3">Motivational tone</label>
           <div className="flex gap-3">
             <button
               onClick={() => setTone('gentle')}
-              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                 tone === 'gentle'
-                  ? 'bg-indigo-600 text-white'
-                  : 'border border-slate-600 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-[#C17A47] text-white'
+                  : 'border border-[#DCC9B4] text-[#5C4033] hover:bg-[#F5EDE0]'
               }`}
             >
-              🌿 Gentle
-              <p className="text-xs font-normal mt-0.5 opacity-70">Warm & supportive</p>
+              Gentle
+              <p className="text-xs font-normal mt-0.5 opacity-70">Warm &amp; supportive</p>
             </button>
             <button
               onClick={() => setTone('tough')}
-              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                 tone === 'tough'
-                  ? 'bg-indigo-600 text-white'
-                  : 'border border-slate-600 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-[#C17A47] text-white'
+                  : 'border border-[#DCC9B4] text-[#5C4033] hover:bg-[#F5EDE0]'
               }`}
             >
-              💪 Tough Love
-              <p className="text-xs font-normal mt-0.5 opacity-70">Honest & direct</p>
+              Tough Love
+              <p className="text-xs font-normal mt-0.5 opacity-70">Honest &amp; direct</p>
             </button>
           </div>
         </div>
@@ -64,17 +64,17 @@ export default function Settings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors"
+          className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
         >
           {saved ? 'Saved ✓' : saving ? 'Saving…' : 'Save settings'}
         </button>
       </div>
 
-      <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-        <h2 className="text-lg font-semibold text-white mb-4">Account</h2>
+      <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+        <h2 className="text-lg font-semibold text-[#3D2B1F] mb-4">Account</h2>
         <button
           onClick={handleSignOut}
-          className="w-full border border-red-500/40 text-red-400 hover:bg-red-500/10 py-2.5 rounded-lg text-sm font-medium transition-colors"
+          className="w-full border border-red-300 text-red-500 hover:bg-red-50 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer"
         >
           Sign out
         </button>

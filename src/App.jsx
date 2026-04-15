@@ -14,7 +14,7 @@ import Settings from './pages/Settings'
 
 function ProtectedRoute() {
   const { user, loading } = useAuth()
-  if (loading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-slate-400">Loading…</div>
+  if (loading) return <div className="min-h-screen bg-[#FDF6EE] flex items-center justify-center text-[#8C7264]">Loading…</div>
   if (!user) return <Navigate to="/login" replace />
   return (
     <div className="flex min-h-screen">
