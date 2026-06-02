@@ -39,8 +39,9 @@ export default function AIChat() {
   const [crisis, setCrisis] = useState(false)
   const [sessionId, setSessionId] = useState(null)
   const [sessions, setSessions] = useState([])
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const bottomRef = useRef(null)
+  const textareaRef = useRef(null)
 
   const fetchSessions = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -70,6 +71,14 @@ export default function AIChat() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Auto-resize textarea height as content changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+    }
+  }, [input])
 
   function loadSession(s) {
     setMessages(s.messages?.length > 0 ? s.messages : [GREETING])
@@ -142,143 +151,204 @@ export default function AIChat() {
   }
 
   return (
-    <div className="flex h-screen pb-16 md:pb-0 overflow-hidden bg-[#0F1117]">
+    <div className="flex h-screen pb-16 md:pb-0 overflow-hidden bg-[#0F1117] relative">
+
+      {/* ── Sidebar Drawer Backdrop (History Overlay) ── */}
+      <div
+        className={`fixed inset-0 bg-black/60 backdrop-blur-xs z-40 transition-opacity duration-300 ${
+          sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      {/* ── Sidebar Drawer Panel ── */}
+      <div
+        className={`fixed top-0 left-0 bottom-0 w-80 bg-[#13151C] border-r border-[#2A2D38] z-50 transition-transform duration-300 ease-out flex flex-col ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2D38]/60">
+          <span className="text-[#E8E8F0] font-semibold text-sm">Past Conversations</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="text-[#8B8FA8] hover:text-[#E8E8F0] p-1.5 rounded-lg hover:bg-[#1E2028] transition-colors cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-4 py-3">
+          <button
+            onClick={() => {
+              startNewSession()
+              setSidebarOpen(false)
+            }}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#2A2D38] hover:border-[#C17A47]/40 text-[#8B8FA8] hover:text-[#E8E8F0] text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer bg-[#1E2028]/30 hover:bg-[#1E2028]/70"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New Conversation
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-3 pb-6 space-y-1">
+          {sessions.length === 0 && (
+            <p className="text-[#8B8FA8] text-xs px-3 py-4 text-center italic">No past conversations yet.</p>
+          )}
+          {sessions.map(s => (
+            <button
+              key={s.id}
+              onClick={() => {
+                loadSession(s)
+                setSidebarOpen(false)
+              }}
+              className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                s.id === sessionId
+                  ? 'bg-[#C17A47]/10 border-[#C17A47]/30 text-[#E8955A]'
+                  : 'bg-transparent border-transparent hover:bg-[#1E2028]/60 text-[#8B8FA8] hover:text-[#E8E8F0]'
+              }`}
+            >
+              <p className="font-medium text-xs truncate leading-relaxed">
+                {sessionPreview(s.messages)}
+              </p>
+              <span className="text-[10px] text-[#8B8FA8]/80 mt-1.5 block">
+                {formatDate(s.updated_at)}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── Chat area ── */}
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#2A2D38] bg-[#13151C] shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#C17A47]/15 border border-[#C17A47]/20 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#2A2D38]/60 bg-[#13151C] shrink-0">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex items-center justify-center p-2 rounded-xl text-[#8B8FA8] hover:text-[#E8E8F0] hover:bg-[#1E2028] transition-all cursor-pointer mr-1"
+            title="History"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-          </div>
+          </button>
+
           <div className="flex-1 min-w-0">
             <p className="text-[#E8E8F0] font-semibold text-sm">Vent Space</p>
             <p className="text-[#8B8FA8] text-xs">Judgment-free. Private.</p>
           </div>
-          <button
-            onClick={() => setCrisis(true)}
-            className="bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shrink-0 cursor-pointer"
-          >
-            Crisis help
-          </button>
-          <button
-            onClick={() => setSidebarOpen(o => !o)}
-            className="hidden md:flex items-center gap-1.5 text-[#8B8FA8] hover:text-[#E8E8F0] text-xs px-2.5 py-1.5 rounded-lg hover:bg-[#1E2028] transition-colors shrink-0 cursor-pointer"
-          >
-            <span>{sidebarOpen ? '→' : '←'}</span>
-            <span>{sidebarOpen ? 'Hide' : 'History'}</span>
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={startNewSession}
+              className="flex items-center gap-1.5 bg-[#1E2028] hover:bg-[#2A2D38] border border-[#2A2D38] text-[#E8E8F0] hover:text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path>
+              </svg>
+              <span className="hidden sm:inline">New Vent</span>
+            </button>
+
+            <button
+              onClick={() => setCrisis(true)}
+              className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 hover:text-red-300 text-xs font-bold px-3 py-2 rounded-xl transition-colors cursor-pointer"
+            >
+              Crisis help
+            </button>
+          </div>
         </div>
 
         {/* Crisis panel */}
         {crisis && (
-          <div className="bg-red-500/10 border-b border-red-500/20 px-4 py-4 space-y-3 shrink-0">
-            <p className="text-red-300 font-semibold text-sm">You don&apos;t have to go through this alone.</p>
-            <p className="text-red-400 text-xs font-semibold">{CRISIS_LINE}</p>
-            <div className="space-y-1.5">
-              {GROUNDING_EXERCISES.map((ex, i) => (
-                <p key={i} className="text-red-400/80 text-xs">• {ex}</p>
-              ))}
+          <div className="bg-red-950/20 border-b border-red-900/40 px-4 py-4 shrink-0">
+            <div className="max-w-2xl mx-auto w-full space-y-3">
+              <p className="text-red-400 font-semibold text-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                You don&apos;t have to go through this alone.
+              </p>
+              <p className="text-red-300/90 text-xs font-semibold">{CRISIS_LINE}</p>
+              <div className="space-y-1.5 pl-2.5 border-l border-red-500/20">
+                {GROUNDING_EXERCISES.map((ex, i) => (
+                  <p key={i} className="text-red-400/80 text-xs">• {ex}</p>
+                ))}
+              </div>
+              <button onClick={() => setCrisis(false)} className="text-red-400/60 hover:text-red-400 text-xs font-semibold underline cursor-pointer transition-colors block mt-2">
+                Close crisis helper
+              </button>
             </div>
-            <button onClick={() => setCrisis(false)} className="text-red-400/60 hover:text-red-400 text-xs underline cursor-pointer transition-colors">
-              Close
-            </button>
           </div>
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
-          {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                msg.role === 'user'
-                  ? 'max-w-[45%] bg-[#C17A47] text-white rounded-br-sm shadow-[0_2px_12px_rgba(193,122,71,0.25)]'
-                  : 'max-w-[60%] bg-[#16181F] border border-[#2A2D38] text-[#E8E8F0] rounded-bl-sm shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
-              }`}>
-                {msg.content}
+        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+          <div className="max-w-2xl mx-auto w-full space-y-6">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                  msg.role === 'user'
+                    ? 'max-w-[85%] sm:max-w-[75%] bg-[#C17A47] text-white rounded-br-none shadow-[0_2px_12px_rgba(193,122,71,0.2)] font-medium'
+                    : 'max-w-[85%] sm:max-w-[75%] bg-[#16181F]/60 border border-[#2A2D38]/60 text-[#E8E8F0] rounded-bl-none shadow-[0_2px_8px_rgba(0,0,0,0.15)]'
+                }`}>
+                  {msg.content}
+                </div>
               </div>
-            </div>
-          ))}
-          {loading && (
-            <div className="flex justify-start">
-              <div className="bg-[#16181F] border border-[#2A2D38] text-[#8B8FA8] px-4 py-3 rounded-2xl rounded-bl-sm text-sm">
-                <span className="animate-pulse">Thinking…</span>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-[#16181F]/40 border border-[#2A2D38]/40 text-[#8B8FA8] px-4 py-3 rounded-2xl rounded-bl-none text-sm flex items-center justify-center">
+                  <span className="flex gap-1.5 py-1 px-0.5">
+                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
-          <div ref={bottomRef} />
+            )}
+            <div ref={bottomRef} />
+          </div>
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-[#2A2D38] bg-[#13151C] shrink-0">
-          <div className="flex gap-2">
-            <textarea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Talk to me…"
-              rows={1}
-              className="flex-1 bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-2.5 text-[#E8E8F0] placeholder-[#8B8FA8] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47]/40 focus:border-[#C17A47]/50 resize-none transition-all"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={loading || !input.trim()}
-              className="bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-40 text-white rounded-xl px-4 text-sm font-bold transition-all cursor-pointer shadow-[0_2px_8px_rgba(193,122,71,0.2)]"
-            >
-              Send
-            </button>
-          </div>
-          <p className="text-[#8B8FA8] text-xs mt-2 text-center">Enter to send · Shift+Enter for new line</p>
-        </div>
-      </div>
-
-      {/* ── Right sidebar — desktop only ── */}
-      <div className={`
-        hidden md:flex flex-col border-l border-[#2A2D38] bg-[#13151C]
-        transition-all duration-200 overflow-hidden shrink-0
-        ${sidebarOpen ? 'w-64' : 'w-0 border-l-0'}
-      `}>
-        {sidebarOpen && (
-          <>
-            <div className="flex items-center px-4 py-4 border-b border-[#2A2D38]">
-              <span className="text-[#E8E8F0] font-semibold text-sm">Conversations</span>
-            </div>
-
-            <div className="px-3 py-3">
+        <div className="px-4 py-4 border-t border-[#2A2D38]/50 bg-[#13151C]/90 backdrop-blur-xs shrink-0">
+          <div className="max-w-2xl mx-auto w-full">
+            <div className="flex gap-2.5 items-end bg-[#1E2028] border border-[#2A2D38] rounded-2xl p-2 focus-within:ring-2 focus-within:ring-[#C17A47]/40 focus-within:border-[#C17A47]/50 transition-all">
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Share what's on your mind..."
+                rows={1}
+                className="flex-1 bg-transparent text-[#E8E8F0] placeholder-[#8B8FA8] text-sm focus:outline-none resize-none px-2.5 py-1.5 max-h-32 min-h-[36px]"
+              />
               <button
-                onClick={startNewSession}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-[#2A2D38] hover:border-[#C17A47]/40 text-[#8B8FA8] hover:text-[#E8E8F0] text-sm transition-all cursor-pointer"
+                onClick={sendMessage}
+                disabled={loading || !input.trim()}
+                className="bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-40 disabled:hover:bg-[#C17A47] text-white rounded-xl p-2.5 transition-all cursor-pointer shadow-[0_2px_8px_rgba(193,122,71,0.2)] shrink-0 flex items-center justify-center"
               >
-                + New conversation
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
               </button>
             </div>
-
-            <div className="flex-1 overflow-y-auto px-3 space-y-1">
-              {sessions.length === 0 && (
-                <p className="text-[#8B8FA8] text-xs px-3 py-2">No past conversations.</p>
-              )}
-              {sessions.map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => loadSession(s)}
-                  className={`w-full text-left px-3 py-3 rounded-xl transition-all cursor-pointer ${
-                    s.id === sessionId
-                      ? 'bg-[#C17A47]/10 border border-[#C17A47]/20'
-                      : 'hover:bg-[#1E2028]'
-                  }`}
-                >
-                  <p className="text-[#B0B3C6] text-xs font-medium truncate leading-snug">
-                    {sessionPreview(s.messages)}
-                  </p>
-                  <p className="text-[#8B8FA8] text-xs mt-1">{formatDate(s.updated_at)}</p>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
+            <p className="text-[#8B8FA8]/60 text-[10px] mt-2 text-center tracking-wide">
+              Press Enter to send · Shift+Enter for new line
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
