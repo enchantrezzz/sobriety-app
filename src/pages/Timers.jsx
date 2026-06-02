@@ -69,12 +69,25 @@ function PostMortemModal({ timer, onConfirm, onCancel, submitting }) {
     {
       content: (
         <div className="text-center py-2">
-          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6BA6C9" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          {/* Sunrise icon — symbolizing pause, reflection, and new dawn */}
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C17A47]/15 to-[#E8955A]/10 border border-[#C17A47]/25 flex items-center justify-center mx-auto mb-5 shadow-[0_0_30px_rgba(193,122,71,0.15)]" style={{ animation: 'pulse 3s ease-in-out infinite' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="w-8 h-8">
+              {/* Horizon line */}
+              <path d="M2 16h20" stroke="#C17A47" strokeWidth="1.5" strokeLinecap="round"/>
+              {/* Sun rising */}
+              <circle cx="12" cy="14" r="4" fill="none" stroke="#E8955A" strokeWidth="1.5"/>
+              <circle cx="12" cy="14" r="4" fill="#E8955A" opacity="0.2"/>
+              {/* Rays */}
+              <path d="M12 6v2" stroke="#E8955A" strokeWidth="1.5" strokeLinecap="round" opacity="0.7"/>
+              <path d="M6.34 8.34l1.42 1.42" stroke="#E8955A" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+              <path d="M17.66 8.34l-1.42 1.42" stroke="#E8955A" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+              <path d="M4 12h2" stroke="#C17A47" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
+              <path d="M18 12h2" stroke="#C17A47" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
+              {/* Ground — gentle wave */}
+              <path d="M3 20c3-2 6-2 9 0s6 2 9 0" stroke="#C17A47" strokeWidth="1" strokeLinecap="round" opacity="0.2"/>
             </svg>
           </div>
-          <p className="text-[#6BA6C9] text-sm font-semibold mb-2">Before you reset…</p>
+          <p className="text-[#E8955A] text-sm font-semibold mb-2 tracking-wide">Before you reset…</p>
           <p className="text-[#E8E8F0] text-3xl font-bold mb-1">{days} day{days !== 1 ? 's' : ''} clean.</p>
           <p className="text-[#B0B3C6] text-base mt-3 leading-relaxed" style={{ fontFamily: 'Lora, Georgia, serif' }}>
             That still matters. Every day you made it was real.
@@ -499,24 +512,45 @@ export default function Timers() {
       {/* Post-relapse encouragement */}
       {relapseSuccess !== null && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-8 max-w-sm w-full text-center shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
-            <div className="w-16 h-16 rounded-2xl bg-[#6DBF87]/10 border border-[#6DBF87]/20 flex items-center justify-center mx-auto mb-5 shadow-[0_0_24px_rgba(109,191,135,0.15)]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6DBF87" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-                <path d="M12 2a10 10 0 110 20A10 10 0 0112 2z"/><path d="M12 6v6l4 2"/>
-              </svg>
+          <div className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-8 max-w-sm w-full text-center shadow-[0_24px_80px_rgba(0,0,0,0.6)] relative overflow-hidden">
+            {/* Ambient radial glow behind the icon */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#6DBF87]/8 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Rising phoenix / flame icon — rebirth, rising again */}
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              {/* Outer glow ring */}
+              <div className="absolute inset-0 rounded-full bg-[#6DBF87]/10 border border-[#6DBF87]/20 shadow-[0_0_40px_rgba(109,191,135,0.2)]" style={{ animation: 'pulse 2.5s ease-in-out infinite' }} />
+              {/* Inner icon container */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" className="w-10 h-10">
+                  {/* Rising flame — renewal */}
+                  <path d="M12 2C10.5 6 8 8 8 11.5C8 14.5 9.8 17 12 17C14.2 17 16 14.5 16 11.5C16 8 13.5 6 12 2Z" stroke="#6DBF87" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 2C10.5 6 8 8 8 11.5C8 14.5 9.8 17 12 17C14.2 17 16 14.5 16 11.5C16 8 13.5 6 12 2Z" fill="#6DBF87" opacity="0.12"/>
+                  {/* Inner ember */}
+                  <path d="M12 8c-.8 2-2 3-2 4.5a2 2 0 004 0c0-1.5-1.2-2.5-2-4.5z" fill="#6DBF87" opacity="0.35"/>
+                  {/* Upward sparks */}
+                  <circle cx="10" cy="5" r="0.6" fill="#6DBF87" opacity="0.5"/>
+                  <circle cx="14.5" cy="4" r="0.4" fill="#6DBF87" opacity="0.3"/>
+                  <circle cx="9" cy="3" r="0.3" fill="#6DBF87" opacity="0.2"/>
+                  {/* Base/roots — grounded foundation */}
+                  <path d="M8 19c1.5-1 2.5-1.5 4-1.5s2.5.5 4 1.5" stroke="#6DBF87" strokeWidth="1.25" strokeLinecap="round" opacity="0.5"/>
+                  <path d="M6 21c2.5-1.5 4-2 6-2s3.5.5 6 2" stroke="#6DBF87" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                </svg>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-[#E8E8F0] mb-2">
+
+            <h2 className="text-2xl font-bold text-[#E8E8F0] mb-2 relative">
               {relapseSuccess} day{relapseSuccess !== 1 ? 's' : ''} of courage.
             </h2>
-            <p className="text-[#C17A47] font-semibold mb-3" style={{ fontFamily: 'Lora, Georgia, serif' }}>
+            <p className="text-[#6DBF87] font-semibold mb-3 relative" style={{ fontFamily: 'Lora, Georgia, serif' }}>
               That wasn&apos;t nothing. That was real.
             </p>
-            <p className="text-[#8B8FA8] text-sm mb-8 leading-relaxed">
+            <p className="text-[#8B8FA8] text-sm mb-8 leading-relaxed relative">
               You now know yourself a little better. That knowledge is yours to keep. The clock resets — the growth doesn&apos;t.
             </p>
             <button onClick={() => { setRelapseTimer(null); setRelapseSuccess(null) }}
-              className="w-full bg-[#C17A47] hover:bg-[#A5622F] text-white font-bold px-6 py-3 rounded-xl transition-all shadow-[0_2px_16px_rgba(193,122,71,0.3)] cursor-pointer">
-              Begin again
+              className="relative w-full bg-gradient-to-r from-[#6DBF87] to-[#5BA677] hover:from-[#5BA677] hover:to-[#4A9065] text-white font-bold px-6 py-3.5 rounded-xl transition-all duration-300 shadow-[0_4px_20px_rgba(109,191,135,0.3)] hover:shadow-[0_6px_28px_rgba(109,191,135,0.4)] cursor-pointer">
+              ✦ Begin again
             </button>
           </div>
         </div>

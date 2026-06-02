@@ -320,13 +320,20 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
       <div className="px-5 pb-5 pt-1">
         <button
           onClick={onReset}
-          className="w-full group flex items-center justify-center gap-1.5 border border-[#2A2D38] hover:border-red-500/40 text-[#8B8FA8] hover:text-red-400 hover:bg-red-500/8 rounded-xl py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer"
+          className="w-full group relative flex items-center justify-center gap-2 border border-[#2A2D38] hover:border-[#E8955A]/30 text-[#8B8FA8] hover:text-[#E8955A] rounded-xl py-3 text-sm font-medium transition-all duration-300 cursor-pointer overflow-hidden"
         >
-          <svg className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7a5 5 0 1 0 1.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 3.5V7h3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Log a relapse
+          {/* Subtle hover background glow */}
+          <span className="absolute inset-0 bg-gradient-to-r from-[#C17A47]/0 via-[#C17A47]/5 to-[#C17A47]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <span className="relative flex items-center gap-2">
+            <svg className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none">
+              {/* Circular path — the cycle of recovery */}
+              <path d="M3.5 12a8.5 8.5 0 1 0 2.4-5.9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M3.5 6.1V10h3.9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+              {/* Small heart in center — compassion */}
+              <path d="M12 10.5c.4-.9 1.3-1.5 2-1.5.9 0 1.7.8 1.7 1.7 0 2.3-3.7 4.3-3.7 4.3s-3.7-2-3.7-4.3c0-.9.8-1.7 1.7-1.7.7 0 1.6.6 2 1.5z" fill="currentColor" opacity="0.4" className="group-hover:opacity-70 transition-opacity duration-300"/>
+            </svg>
+            <span>Log a relapse</span>
+          </span>
         </button>
       </div>
     </div>
