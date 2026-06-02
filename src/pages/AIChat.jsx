@@ -43,6 +43,7 @@ export default function AIChat() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState(null) // { id, preview }
   const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
   const bottomRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -95,6 +96,7 @@ export default function AIChat() {
 
   function promptDeleteSession(id, preview, e) {
     e.stopPropagation()
+    setDeleteError(null)
     setDeleteTarget({ id, preview })
   }
 
@@ -102,14 +104,19 @@ export default function AIChat() {
     if (!deleteTarget) return
     setDeleting(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { error } = await supabase
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Not authenticated')
+
+      const { error, count } = await supabase
         .from('chat_sessions')
-        .delete()
+        .delete({ count: 'exact' })
         .eq('id', deleteTarget.id)
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
 
       if (error) throw error
+
+      // count === 0 means RLS blocked it or row didn't exist
+      if (count === 0) throw new Error('Delete was blocked — row may not exist or RLS denied it')
 
       setSessions(prev => prev.filter(s => s.id !== deleteTarget.id))
       if (sessionId === deleteTarget.id) {
@@ -118,6 +125,7 @@ export default function AIChat() {
       setDeleteTarget(null)
     } catch (err) {
       console.error('Failed to delete conversation:', err.message)
+      setDeleteError(err.message)
     } finally {
       setDeleting(false)
     }
@@ -475,6 +483,11 @@ export default function AIChat() {
                   This cannot be undone. All messages in this conversation will be permanently deleted.
                 </p>
               </div>
+              {deleteError && (
+                <div className="bg-red-500/15 border border-red-500/30 rounded-xl px-4 py-2.5 mb-4">
+                  <p className="text-red-400 text-xs font-semibold">Error: {deleteError}</p>
+                </div>
+              )}
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteTarget(null)}

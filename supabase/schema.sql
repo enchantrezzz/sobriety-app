@@ -79,3 +79,5 @@ alter table chat_sessions enable row level security;
 create policy "Users can read own chat sessions" on chat_sessions for select using (auth.uid() = user_id);
 create policy "Users can delete own chat sessions" on chat_sessions for delete using (auth.uid() = user_id);
 -- Insert/update done via service role in edge function
+-- Table-level grant required for the delete policy to take effect
+grant delete on table chat_sessions to authenticated;
