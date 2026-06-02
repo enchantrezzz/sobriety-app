@@ -42,7 +42,7 @@ export default function MilestoneAlert() {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="bg-[#FFFAF4] border border-[#C17A47]/30 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
+        className="surface-bg border border-[#C17A47]/30 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">

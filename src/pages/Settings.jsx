@@ -30,7 +30,7 @@ export default function Settings() {
     <div className="p-4 md:p-8 pb-24 md:pb-8 max-w-2xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-[#3D2B1F]">Settings</h1>
 
-      <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)] space-y-5">
+      <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)] space-y-5">
         <div>
           <label className="block text-sm font-medium text-[#5C4033] mb-1">Email</label>
           <p className="text-[#8C7264] text-sm">{user?.email}</p>
@@ -73,7 +73,7 @@ export default function Settings() {
         </button>
       </div>
 
-      <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+      <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
         <h2 className="text-lg font-semibold text-[#3D2B1F] mb-4">Account</h2>
         <button
           onClick={handleSignOut}

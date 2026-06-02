@@ -151,7 +151,7 @@ export default function AIChat() {
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-[#E8D9C8] bg-[#FFFAF4] shrink-0">
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-subtle surface-bg shrink-0">
           <div className="w-9 h-9 rounded-full bg-[#C17A47]/15 flex items-center justify-center shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
@@ -198,7 +198,7 @@ export default function AIChat() {
               <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                 msg.role === 'user'
                   ? 'max-w-[45%] bg-[#C17A47] text-white rounded-br-sm'
-                  : 'max-w-[60%] bg-[#FFFAF4] text-[#3D2B1F] rounded-bl-sm border border-[#E8D9C8] shadow-[0_1px_4px_rgba(139,90,43,0.06)]'
+                  : 'max-w-[60%] surface-bg text-[#3D2B1F] rounded-bl-sm border border-subtle shadow-[0_1px_4px_rgba(139,90,43,0.06)]'
               }`}>
                 {msg.content}
               </div>
@@ -206,7 +206,7 @@ export default function AIChat() {
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-[#FFFAF4] text-[#8C7264] px-4 py-3 rounded-2xl rounded-bl-sm text-sm border border-[#E8D9C8]">
+              <div className="surface-bg text-[#8C7264] px-4 py-3 rounded-2xl rounded-bl-sm text-sm border border-subtle">
                 <span className="animate-pulse">Thinking…</span>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function AIChat() {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-[#E8D9C8] bg-[#FFFAF4] shrink-0">
+        <div className="px-4 py-3 border-t border-subtle surface-bg shrink-0">
           <div className="flex gap-2">
             <textarea
               value={input}
@@ -239,13 +239,13 @@ export default function AIChat() {
 
       {/* ── Right sidebar — desktop only ── */}
       <div className={`
-        hidden md:flex flex-col border-l border-[#E8D9C8] bg-[#FFFAF4]
+        hidden md:flex flex-col border-l border-subtle surface-bg
         transition-all duration-200 overflow-hidden shrink-0
         ${sidebarOpen ? 'w-64' : 'w-0 border-l-0'}
       `}>
         {sidebarOpen && (
           <>
-            <div className="flex items-center justify-between px-4 py-4 border-b border-[#E8D9C8]">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-subtle">
               <span className="text-[#3D2B1F] font-semibold text-sm">Conversations</span>
             </div>
 

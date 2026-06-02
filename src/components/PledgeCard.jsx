@@ -60,7 +60,7 @@ export default function PledgeCard() {
     : 'General'
 
   return (
-    <div className="bg-[#FFFAF4] rounded-2xl p-6 border border-[#E8D9C8] shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+    <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[#3D2B1F]">Today&apos;s Pledge</h3>

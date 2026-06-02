@@ -186,7 +186,7 @@ function PostMortemModal({ timer, onConfirm, onCancel, submitting }) {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 overflow-y-auto py-8">
-      <div className="bg-[#FFFAF4] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[#E8D9C8]">
+      <div className="card p-6 max-w-sm w-full shadow-2xl">
         <Steps current={step} total={STEPS.length} />
 
         <div className="min-h-[260px]">
@@ -249,7 +249,7 @@ function DeleteModal({ timer, onConfirm, onArchiveInstead, onCancel, deleting })
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-      <div className="bg-[#FFFAF4] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[#E8D9C8]">
+      <div className="card p-6 max-w-sm w-full shadow-2xl">
 
         {step === 0 && (
           <>
@@ -351,7 +351,7 @@ function ArchiveModal({ timer, onConfirm, onCancel }) {
   const days = getElapsedDays(timer.started_at)
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-      <div className="bg-[#FFFAF4] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[#E8D9C8] text-center">
+      <div className="card p-6 max-w-sm w-full shadow-2xl text-center">
         <div className="w-12 h-12 rounded-full bg-[#F5EDE0] flex items-center justify-center mx-auto mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
             <rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 002 2h12a2 2 0 002-2V9M10 13h4"/>
@@ -511,7 +511,7 @@ export default function Timers() {
       {/* ── Add timer modal ── */}
       {showAdd && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-[#FFFAF4] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[#E8D9C8] space-y-4">
+          <div className="card p-6 max-w-sm w-full shadow-2xl space-y-4">
             <h2 className="text-xl font-bold text-[#3D2B1F]">What are you tracking?</h2>
             <select
               value={newName}
@@ -579,7 +579,7 @@ export default function Timers() {
       {/* ── Post-relapse encouragement ── */}
       {relapseSuccess !== null && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div className="bg-[#FFFAF4] rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl border border-[#E8D9C8]">
+          <div className="card p-8 max-w-sm w-full text-center shadow-2xl">
             <div className="w-16 h-16 rounded-full bg-[#EEF5EB] flex items-center justify-center mx-auto mb-5">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7C9B6E" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
                 <path d="M12 2a10 10 0 110 20A10 10 0 0112 2z"/><path d="M12 6v6l4 2"/>
@@ -661,7 +661,7 @@ export default function Timers() {
             {archivedTimers.map(t => {
               const days = Math.floor((Date.now() - new Date(t.started_at).getTime()) / 86400000)
               return (
-                <div key={t.id} className="flex items-center justify-between bg-[#FFFAF4] border border-[#E8D9C8] rounded-xl px-4 py-3">
+                <div key={t.id} className="flex items-center justify-between surface-bg border border-subtle rounded-xl px-4 py-3">
                   <div>
                     <p className="text-[#5C4033] text-sm font-medium">{t.addiction_name}</p>
                     <p className="text-[#A69080] text-xs mt-0.5">

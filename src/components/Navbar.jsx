@@ -82,8 +82,8 @@ export default function Navbar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-56 shrink-0 bg-[#FFFAF4] border-r border-[#E8D9C8] min-h-screen">
-        <div className="px-6 py-6 border-b border-[#E8D9C8]">
+      <aside className="hidden md:flex flex-col w-56 shrink-0 surface-bg border-r border-subtle min-h-screen">
+        <div className="px-6 py-6 border-b border-subtle">
           <span className="text-xl font-bold text-[#3D2B1F]" style={{ fontFamily: 'Lora, Georgia, serif' }}>Sobriety</span>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
@@ -104,7 +104,7 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
-        <div className="px-3 py-4 border-t border-[#E8D9C8]">
+        <div className="px-3 py-4 border-t border-subtle">
           <NavLink
             to="/settings"
             className={({ isActive }) =>
@@ -125,7 +125,7 @@ export default function Navbar() {
       </aside>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#FFFAF4] border-t border-[#E8D9C8] z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 surface-bg border-t border-subtle z-50">
         <div className="flex justify-around items-center h-16">
           {links.map(({ to, label, Icon }) => (
             <NavLink

@@ -56,7 +56,7 @@ function KebabMenu({ onArchive, onDelete }) {
         ⋮
       </button>
       {open && (
-        <div className="absolute right-0 top-9 w-40 bg-[#FFFAF4] border border-[#E8D9C8] rounded-xl shadow-lg z-20 overflow-hidden">
+        <div className="absolute right-0 top-9 w-40 surface-bg border border-subtle rounded-xl shadow-lg z-20 overflow-hidden">
           <button
             onClick={() => { onArchive(); setOpen(false) }}
             className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-[#5C4033] hover:bg-[#F5EDE0] hover:text-[#3D2B1F] transition-colors cursor-pointer"
@@ -252,7 +252,7 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
   const latestMilestoneReached = getLatestMilestoneReached(elapsed.days)
 
   return (
-    <div className="bg-[#FFFAF4] rounded-2xl border border-[#E8D9C8] overflow-hidden shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+    <div className="card overflow-hidden shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#C17A47]/10 to-[#F5EDE0] px-5 py-4 flex items-center justify-between border-b border-[#E8D9C8]">
         <div>

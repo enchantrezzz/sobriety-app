@@ -38,3 +38,29 @@ h1, h2, h3 {
   display: flex;
   flex-direction: column;
 }
+
+@layer utilities {
+  .surface-bg {
+    background-color: var(--color-surface);
+  }
+
+  .surface-2-bg {
+    background-color: var(--color-surface-2);
+  }
+
+  .border-subtle {
+    border-color: var(--color-warm-border);
+  }
+
+  .border-subtle-2 {
+    border-color: var(--color-warm-border-2);
+  }
+
+  /* Reusable “card” surface: consistent background + border + radius.
+     (Shadows/padding should remain per-component for now.) */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-warm-border);
+    border-radius: 1rem; /* rounded-2xl */
+  }
+}
