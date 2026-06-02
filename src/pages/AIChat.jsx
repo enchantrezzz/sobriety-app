@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { supabase } from '../supabaseClient'
 import { useAuth } from '../context/AuthContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const CRISIS_KEYWORDS = ["can't do this", 'give up', 'hopeless', 'relapse now', 'going to use', 'going to drink', 'want to die', "can't stop"]
 const GROUNDING_EXERCISES = [
@@ -153,76 +154,87 @@ export default function AIChat() {
   return (
     <div className="flex h-screen pb-16 md:pb-0 overflow-hidden bg-[#0F1117] relative">
 
-      {/* ── Sidebar Drawer Backdrop (History Overlay) ── */}
-      <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-xs z-40 transition-opacity duration-300 ${
-          sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setSidebarOpen(false)}
-      />
+      {/* ── Sidebar Drawer ── */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            {/* Backdrop overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 cursor-pointer pointer-events-auto"
+              onClick={() => setSidebarOpen(false)}
+            />
 
-      {/* ── Sidebar Drawer Panel ── */}
-      <div
-        className={`fixed top-0 left-0 bottom-0 w-80 bg-[#13151C] border-r border-[#2A2D38] z-50 transition-transform duration-300 ease-out flex flex-col ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2D38]/60">
-          <span className="text-[#E8E8F0] font-semibold text-sm">Past Conversations</span>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-[#8B8FA8] hover:text-[#E8E8F0] p-1.5 rounded-lg hover:bg-[#1E2028] transition-colors cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-
-        <div className="px-4 py-3">
-          <button
-            onClick={() => {
-              startNewSession()
-              setSidebarOpen(false)
-            }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#2A2D38] hover:border-[#C17A47]/40 text-[#8B8FA8] hover:text-[#E8E8F0] text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer bg-[#1E2028]/30 hover:bg-[#1E2028]/70"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            New Conversation
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-3 pb-6 space-y-1">
-          {sessions.length === 0 && (
-            <p className="text-[#8B8FA8] text-xs px-3 py-4 text-center italic">No past conversations yet.</p>
-          )}
-          {sessions.map(s => (
-            <button
-              key={s.id}
-              onClick={() => {
-                loadSession(s)
-                setSidebarOpen(false)
-              }}
-              className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
-                s.id === sessionId
-                  ? 'bg-[#C17A47]/10 border-[#C17A47]/30 text-[#E8955A]'
-                  : 'bg-transparent border-transparent hover:bg-[#1E2028]/60 text-[#8B8FA8] hover:text-[#E8E8F0]'
-              }`}
+            {/* Drawer Panel */}
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 26, stiffness: 240 }}
+              className="fixed top-0 left-0 bottom-0 w-80 bg-[#13151C] border-r border-[#2A2D38] z-50 flex flex-col"
             >
-              <p className="font-medium text-xs truncate leading-relaxed">
-                {sessionPreview(s.messages)}
-              </p>
-              <span className="text-[10px] text-[#8B8FA8]/80 mt-1.5 block">
-                {formatDate(s.updated_at)}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[#2A2D38]/60">
+                <span className="text-[#E8E8F0] font-semibold text-sm">Past Conversations</span>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-[#8B8FA8] hover:text-[#E8E8F0] p-1.5 rounded-lg hover:bg-[#1E2028] transition-colors cursor-pointer"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <div className="px-4 py-3">
+                <button
+                  onClick={() => {
+                    startNewSession()
+                    setSidebarOpen(false)
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#2A2D38] hover:border-[#C17A47]/40 text-[#8B8FA8] hover:text-[#E8E8F0] text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer bg-[#1E2028]/30 hover:bg-[#1E2028]/70"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  New Conversation
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-3 pb-6 space-y-1">
+                {sessions.length === 0 && (
+                  <p className="text-[#8B8FA8] text-xs px-3 py-4 text-center italic">No past conversations yet.</p>
+                )}
+                {sessions.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      loadSession(s)
+                      setSidebarOpen(false)
+                    }}
+                    className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                      s.id === sessionId
+                        ? 'bg-[#C17A47]/10 border-[#C17A47]/30 text-[#E8955A]'
+                        : 'bg-transparent border-transparent hover:bg-[#1E2028]/60 text-[#8B8FA8] hover:text-[#E8E8F0]'
+                    }`}
+                  >
+                    <p className="font-medium text-xs truncate leading-relaxed">
+                      {sessionPreview(s.messages)}
+                    </p>
+                    <span className="text-[10px] text-[#8B8FA8]/80 mt-1.5 block">
+                      {formatDate(s.updated_at)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ── Chat area ── */}
       <div className="flex flex-col flex-1 min-w-0">
@@ -231,7 +243,7 @@ export default function AIChat() {
         <div className="flex items-center gap-3 px-4 py-4 border-b border-[#2A2D38]/60 bg-[#13151C] shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex items-center justify-center p-2 rounded-xl text-[#8B8FA8] hover:text-[#E8E8F0] hover:bg-[#1E2028] transition-all cursor-pointer mr-1"
+            className="flex items-center justify-center p-2 rounded-xl text-[#8B8FA8] hover:text-[#E8E8F0] hover:bg-[#1E2028] transition-all cursor-pointer mr-1 animate-pulse"
             title="History"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -267,35 +279,49 @@ export default function AIChat() {
         </div>
 
         {/* Crisis panel */}
-        {crisis && (
-          <div className="bg-red-950/20 border-b border-red-900/40 px-4 py-4 shrink-0">
-            <div className="max-w-2xl mx-auto w-full space-y-3">
-              <p className="text-red-400 font-semibold text-sm flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                  <line x1="12" y1="9" x2="12" y2="13"></line>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
-                You don&apos;t have to go through this alone.
-              </p>
-              <p className="text-red-300/90 text-xs font-semibold">{CRISIS_LINE}</p>
-              <div className="space-y-1.5 pl-2.5 border-l border-red-500/20">
-                {GROUNDING_EXERCISES.map((ex, i) => (
-                  <p key={i} className="text-red-400/80 text-xs">• {ex}</p>
-                ))}
+        <AnimatePresence>
+          {crisis && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className="bg-red-950/20 border-b border-red-900/40 px-4 py-4 shrink-0 overflow-hidden"
+            >
+              <div className="max-w-2xl mx-auto w-full space-y-3">
+                <p className="text-red-400 font-semibold text-sm flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  You don&apos;t have to go through this alone.
+                </p>
+                <p className="text-red-300/90 text-xs font-semibold">{CRISIS_LINE}</p>
+                <div className="space-y-1.5 pl-2.5 border-l border-red-500/20">
+                  {GROUNDING_EXERCISES.map((ex, i) => (
+                    <p key={i} className="text-red-400/80 text-xs">• {ex}</p>
+                  ))}
+                </div>
+                <button onClick={() => setCrisis(false)} className="text-red-400/60 hover:text-red-400 text-xs font-semibold underline cursor-pointer transition-colors block mt-2">
+                  Close crisis helper
+                </button>
               </div>
-              <button onClick={() => setCrisis(false)} className="text-red-400/60 hover:text-red-400 text-xs font-semibold underline cursor-pointer transition-colors block mt-2">
-                Close crisis helper
-              </button>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6">
           <div className="max-w-2xl mx-auto w-full space-y-6">
             {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
                 <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                   msg.role === 'user'
                     ? 'max-w-[85%] sm:max-w-[75%] bg-[#C17A47] text-white rounded-br-none shadow-[0_2px_12px_rgba(193,122,71,0.2)] font-medium'
@@ -303,18 +329,32 @@ export default function AIChat() {
                 }`}>
                   {msg.content}
                 </div>
-              </div>
+              </motion.div>
             ))}
             {loading && (
-              <div className="flex justify-start">
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
                 <div className="bg-[#16181F]/40 border border-[#2A2D38]/40 text-[#8B8FA8] px-4 py-3 rounded-2xl rounded-bl-none text-sm flex items-center justify-center">
                   <span className="flex gap-1.5 py-1 px-0.5">
-                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    {[0, 1, 2].map((dot) => (
+                      <motion.span
+                        key={dot}
+                        animate={{ y: [0, -5, 0] }}
+                        transition={{
+                          duration: 0.6,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: dot * 0.15
+                        }}
+                        className="w-1.5 h-1.5 bg-[#8B8FA8] rounded-full"
+                      />
+                    ))}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             )}
             <div ref={bottomRef} />
           </div>
