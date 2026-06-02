@@ -478,10 +478,19 @@ export default function Timers() {
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8 max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#3D2B1F]">Sobriety Timers</h1>
-        <button onClick={openAdd} className="bg-[#C17A47] hover:bg-[#A5622F] text-white font-semibold px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer">
-          + Add timer
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-[#3D2B1F]">Sobriety Timers</h1>
+          <p className="text-[#A69080] text-sm mt-0.5">Every second counts.</p>
+        </div>
+        <button
+          onClick={openAdd}
+          className="flex items-center gap-1.5 bg-[#C17A47] hover:bg-[#A5622F] active:scale-95 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-[0_2px_12px_rgba(193,122,71,0.35)] hover:shadow-[0_4px_16px_rgba(193,122,71,0.45)] cursor-pointer"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          Add timer
         </button>
       </div>
 

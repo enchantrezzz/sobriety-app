@@ -109,25 +109,25 @@ function MilestoneTrack({ days }) {
   const pctToNext = allDone ? 100 : Math.round(pct)
 
   return (
-    <div className="mt-6 px-1">
+    <div className="mt-5 px-1">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs text-[#A69080] uppercase tracking-wider">Milestone journey</p>
+        <p className="text-[10px] text-[#A69080] uppercase tracking-widest font-semibold">Progress</p>
         {!allDone && (
-          <span className="text-xs text-[#A69080] tabular-nums">{pctToNext}%</span>
+          <span className="text-[10px] text-[#C17A47] font-bold tabular-nums">{pctToNext}%</span>
         )}
       </div>
 
       {/* Track */}
-      <div className="relative h-2 mx-2">
+      <div className="relative h-2.5 mx-2">
         {/* Background */}
-        <div className="absolute inset-0 bg-[#E8D9C8] rounded-full" />
+        <div className="absolute inset-0 bg-[#EDE0D0] rounded-full" />
 
         {/* Fill */}
         <div
           className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out"
           style={{
             width: mounted ? `calc(${pct}% * (100% - 0px) / 100%)` : '0%',
-            background: 'linear-gradient(to right, #C17A47, #D4956A)'
+            background: 'linear-gradient(to right, #C17A47, #E8A87C)'
           }}
         />
 
@@ -144,12 +144,12 @@ function MilestoneTrack({ days }) {
               style={{ left: `${markerPct}%`, transform: 'translate(-50%, -50%)' }}
             >
               <div className={`
-                relative flex items-center justify-center rounded-full border-2 transition-all duration-500 z-10
+                relative flex items-center justify-center rounded-full transition-all duration-500 z-10
                 ${completed
-                  ? 'w-4 h-4 bg-[#C17A47] border-[#D4956A] shadow-[0_0_8px_rgba(193,122,71,0.6)]'
+                  ? 'w-3.5 h-3.5 bg-[#C17A47] shadow-[0_0_8px_rgba(193,122,71,0.7)]'
                   : isNext
-                  ? 'w-4 h-4 bg-[#FDF6EE] border-[#C17A47] shadow-[0_0_10px_rgba(193,122,71,0.5)] animate-pulse'
-                  : 'w-3 h-3 bg-[#E8D9C8] border-[#DCC9B4]'}
+                  ? 'w-3.5 h-3.5 bg-white border-2 border-[#C17A47] shadow-[0_0_10px_rgba(193,122,71,0.5)] animate-pulse'
+                  : 'w-2.5 h-2.5 bg-[#E8D9C8] border border-[#DCC9B4]'}
               `}>
                 {completed && (
                   <svg className="w-2 h-2 text-white" viewBox="0 0 8 8" fill="none">
@@ -159,8 +159,8 @@ function MilestoneTrack({ days }) {
               </div>
               {showLabel && (
                 <span className={`
-                  absolute top-[14px] text-[10px] font-medium whitespace-nowrap
-                  ${completed ? 'text-[#C17A47]' : isNext ? 'text-[#C17A47]' : 'text-[#BEA898]'}
+                  absolute top-[14px] text-[10px] font-semibold whitespace-nowrap
+                  ${completed ? 'text-[#C17A47]' : isNext ? 'text-[#C17A47]' : 'text-[#C8B8A8]'}
                 `}>
                   {milestoneLabel(m)}
                 </span>
@@ -175,7 +175,7 @@ function MilestoneTrack({ days }) {
             className="absolute top-1/2 z-20 transition-all duration-1000 ease-out"
             style={{ left: mounted ? `${pct}%` : '0%', transform: 'translate(-50%, -50%)' }}
           >
-            <div className="w-4 h-4 rounded-full bg-[#FFFAF4] border-2 border-[#C17A47] shadow-[0_0_12px_rgba(193,122,71,0.8)]" />
+            <div className="w-4 h-4 rounded-full bg-white border-2 border-[#C17A47] shadow-[0_0_14px_rgba(193,122,71,0.9)]" />
           </div>
         )}
       </div>
@@ -184,21 +184,21 @@ function MilestoneTrack({ days }) {
       <div className="mt-8">
         {allDone ? (
           <div className="text-center space-y-1">
-            <p className="text-[#C17A47] text-sm font-semibold">All milestones reached</p>
+            <p className="text-[#C17A47] text-sm font-bold">All milestones reached ✦</p>
             <p className="text-[#A69080] text-xs">You are extraordinary. Keep going.</p>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-2">
-            <div className="text-center">
+          <div className="flex items-center gap-3">
+            <div className="text-left min-w-[32px]">
               <p className="text-[#3D2B1F] text-sm font-bold tabular-nums">{days}</p>
               <p className="text-[#A69080] text-[10px] uppercase tracking-wide">days</p>
             </div>
             <div className="flex-1 flex justify-center">
-              <span className="text-[#C17A47] text-xs font-medium bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1.5 text-center">
-                {daysToNext} day{daysToNext !== 1 ? 's' : ''} to {milestoneLabel(MILESTONES_DAYS[nextIdx])}
+              <span className="text-[#C17A47] text-xs font-semibold bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1 text-center whitespace-nowrap">
+                {daysToNext}d to {milestoneLabel(MILESTONES_DAYS[nextIdx])}
               </span>
             </div>
-            <div className="text-center">
+            <div className="text-right min-w-[32px]">
               <p className="text-[#8C7264] text-sm font-bold tabular-nums">{trackEnd}</p>
               <p className="text-[#A69080] text-[10px] uppercase tracking-wide">goal</p>
             </div>
@@ -210,11 +210,26 @@ function MilestoneTrack({ days }) {
 }
 
 // ── Time unit box ───────────────────────────────────────────────
-function TimeUnit({ value, label }) {
+function TimeUnit({ value, label, highlight }) {
   return (
-    <div className="flex flex-col items-center bg-[#F0E4D4] rounded-xl px-4 py-3 min-w-[64px]">
-      <span className="text-3xl font-bold text-[#3D2B1F] font-mono tabular-nums leading-none">{value}</span>
-      <span className="text-xs text-[#A69080] mt-1.5 uppercase tracking-wider">{label}</span>
+    <div className={`
+      flex flex-col items-center rounded-2xl px-3 py-3 min-w-[60px] relative overflow-hidden
+      transition-all duration-300
+      ${highlight
+        ? 'bg-gradient-to-b from-[#C17A47] to-[#A5622F] shadow-[0_4px_20px_rgba(193,122,71,0.45)]'
+        : 'bg-[#F5EDE0] border border-[#E8D9C8]'}
+    `}>
+      {highlight && (
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+      )}
+      <span className={`
+        text-3xl font-bold font-mono tabular-nums leading-none tracking-tight
+        ${highlight ? 'text-white' : 'text-[#3D2B1F]'}
+      `}>{value}</span>
+      <span className={`
+        text-[10px] mt-1.5 uppercase tracking-widest font-semibold
+        ${highlight ? 'text-orange-100' : 'text-[#A69080]'}
+      `}>{label}</span>
     </div>
   )
 }
@@ -252,32 +267,50 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
   const latestMilestoneReached = getLatestMilestoneReached(elapsed.days)
 
   return (
-    <div className="card overflow-hidden shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+    <div className="card overflow-hidden shadow-[0_4px_24px_rgba(139,90,43,0.10)] hover:shadow-[0_8px_32px_rgba(139,90,43,0.15)] transition-shadow duration-300">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#C17A47]/10 to-[#F5EDE0] px-5 py-4 flex items-center justify-between border-b border-[#E8D9C8]">
-        <div>
-          <h3 className="text-[#3D2B1F] font-semibold">{timer.addiction_name}</h3>
-          <p className="text-[#C17A47]/80 text-xs mt-0.5">
+      <div className="relative px-5 pt-5 pb-4 flex items-start justify-between">
+        {/* Subtle warm glow in top-right */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#C17A47]/8 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/4" />
+
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-0.5">
+            {/* Live indicator dot */}
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C17A47] opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C17A47]" />
+            </span>
+            <h3 className="text-[#3D2B1F] font-bold text-base">{timer.addiction_name}</h3>
+          </div>
+          <p className="text-[#A69080] text-xs pl-4">
             Since {new Date(timer.started_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </p>
           {latestMilestoneReached && (
-            <span className="mt-2 inline-flex items-center text-[11px] font-semibold text-[#C17A47] bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1.5">
-              Latest milestone: {milestoneLabel(latestMilestoneReached)}
+            <span className="mt-2.5 ml-4 inline-flex items-center gap-1 text-[11px] font-bold text-[#C17A47] bg-[#C17A47]/10 border border-[#C17A47]/25 rounded-full px-2.5 py-1">
+              <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
+                <path d="M6 1L7.5 4.5H11L8.5 6.5L9.5 10L6 8L2.5 10L3.5 6.5L1 4.5H4.5L6 1Z" fill="currentColor"/>
+              </svg>
+              {milestoneLabel(latestMilestoneReached)} milestone
             </span>
           )}
         </div>
-        <KebabMenu onArchive={onArchive} onDelete={onDelete} />
+        <div className="relative">
+          <KebabMenu onArchive={onArchive} onDelete={onDelete} />
+        </div>
       </div>
 
+      {/* Divider */}
+      <div className="mx-5 h-px bg-gradient-to-r from-transparent via-[#E8D9C8] to-transparent" />
+
       {/* Timer digits */}
-      <div className="px-5 pt-5">
-        <div className="flex gap-2 justify-center">
-          <TimeUnit value={elapsed.days} label="days" />
-          <div className="flex items-center pb-4 text-[#DCC9B4] font-bold text-xl">:</div>
+      <div className="px-5 pt-5 pb-1">
+        <div className="flex gap-2 justify-center items-end">
+          <TimeUnit value={elapsed.days} label="days" highlight />
+          <div className="flex items-center mb-[18px] text-[#C17A47]/40 font-bold text-lg select-none">:</div>
           <TimeUnit value={pad(elapsed.hours)} label="hrs" />
-          <div className="flex items-center pb-4 text-[#DCC9B4] font-bold text-xl">:</div>
+          <div className="flex items-center mb-[18px] text-[#DCC9B4] font-bold text-lg select-none">:</div>
           <TimeUnit value={pad(elapsed.minutes)} label="min" />
-          <div className="flex items-center pb-4 text-[#DCC9B4] font-bold text-xl">:</div>
+          <div className="flex items-center mb-[18px] text-[#DCC9B4] font-bold text-lg select-none">:</div>
           <TimeUnit value={pad(elapsed.seconds)} label="sec" />
         </div>
 
@@ -285,12 +318,16 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
       </div>
 
       {/* Reset button */}
-      <div className="px-5 py-5">
+      <div className="px-5 pb-5 pt-1">
         <button
           onClick={onReset}
-          className="w-full border border-red-300 text-red-500 hover:border-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl py-2 text-sm font-medium transition-all cursor-pointer"
+          className="w-full group flex items-center justify-center gap-1.5 border border-[#E8D9C8] hover:border-red-300 text-[#A69080] hover:text-red-500 hover:bg-red-50/60 rounded-xl py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer"
         >
-          Reset timer
+          <svg className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 7a5 5 0 1 0 1.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 3.5V7h3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Log a relapse
         </button>
       </div>
     </div>
