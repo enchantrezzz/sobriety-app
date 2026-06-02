@@ -12,6 +12,7 @@ import AIChat from './pages/AIChat'
 import Insights from './pages/Insights'
 import Settings from './pages/Settings'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 
 function ProtectedRoute() {
   const { user, loading } = useAuth()
@@ -69,6 +70,7 @@ export default function App() {
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          <Analytics />
         </AppProvider>
       </AuthProvider>
     </BrowserRouter>
