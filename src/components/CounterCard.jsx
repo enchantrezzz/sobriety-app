@@ -326,11 +326,15 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
           <span className="absolute inset-0 bg-gradient-to-r from-[#C17A47]/0 via-[#C17A47]/5 to-[#C17A47]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <span className="relative flex items-center gap-2">
             <svg className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110" viewBox="0 0 24 24" fill="none">
-              {/* Circular path — the cycle of recovery */}
-              <path d="M3.5 12a8.5 8.5 0 1 0 2.4-5.9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M3.5 6.1V10h3.9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
-              {/* Small heart in center — compassion */}
-              <path d="M12 10.5c.4-.9 1.3-1.5 2-1.5.9 0 1.7.8 1.7 1.7 0 2.3-3.7 4.3-3.7 4.3s-3.7-2-3.7-4.3c0-.9.8-1.7 1.7-1.7.7 0 1.6.6 2 1.5z" fill="currentColor" opacity="0.4" className="group-hover:opacity-70 transition-opacity duration-300"/>
+              {/* Candle flame — the light flickers but never goes out */}
+              <path d="M12 3C10.8 6.2 9 8 9 10.8c0 1.7 1.3 3.2 3 3.2s3-1.5 3-3.2C15 8 13.2 6.2 12 3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 3C10.8 6.2 9 8 9 10.8c0 1.7 1.3 3.2 3 3.2s3-1.5 3-3.2C15 8 13.2 6.2 12 3z" fill="currentColor" opacity="0.15" className="group-hover:opacity-30 transition-opacity duration-300"/>
+              {/* Inner glow */}
+              <path d="M12 7.5c-.6 1.5-1.2 2.2-1.2 3.3a1.2 1.2 0 002.4 0c0-1.1-.6-1.8-1.2-3.3z" fill="currentColor" opacity="0.3" className="group-hover:opacity-50 transition-opacity duration-300"/>
+              {/* Candle body */}
+              <rect x="10.5" y="14" width="3" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6"/>
+              {/* Base */}
+              <path d="M9 19.5h6" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.4"/>
             </svg>
             <span>Log a relapse</span>
           </span>
