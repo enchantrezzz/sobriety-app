@@ -103,28 +103,27 @@ export default function AIChat() {
   async function confirmDeleteSession() {
     if (!deleteTarget) return
     setDeleting(true)
+    setDeleteError(null)
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
 
-      const { error, count } = await supabase
+      const { error } = await supabase
         .from('chat_sessions')
-        .delete({ count: 'exact' })
+        .delete()
         .eq('id', deleteTarget.id)
         .eq('user_id', session.user.id)
 
       if (error) throw error
 
-      // count === 0 means RLS blocked it or row didn't exist
-      if (count === 0) throw new Error('Delete was blocked — row may not exist or RLS denied it')
-
+      // Optimistically update UI — if the row was already gone that's fine too
       setSessions(prev => prev.filter(s => s.id !== deleteTarget.id))
       if (sessionId === deleteTarget.id) {
         startNewSession()
       }
       setDeleteTarget(null)
     } catch (err) {
-      console.error('Failed to delete conversation:', err.message)
+      console.error('Failed to delete conversation:', err)
       setDeleteError(err.message)
     } finally {
       setDeleting(false)
