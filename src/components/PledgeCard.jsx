@@ -31,6 +31,15 @@ function PledgeEntry({ pledge, timerName }) {
   )
 }
 
+const PRESET_REASONS = [
+  "My physical & mental health",
+  "To show up for my loved ones",
+  "To feel clear-headed and present",
+  "To reclaim control over my life",
+  "To build a better, brighter future",
+  "I deserve a clean, healthy life"
+]
+
 export default function PledgeCard() {
   const { todayPledges, pledgeStreak, loading, submitPledge } = usePledge()
   const { timers } = useTimer()
@@ -103,17 +112,46 @@ export default function PledgeCard() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <p className="text-[#8B8FA8] text-sm">
-            Why are you staying clean{selectedTimerId ? ` from ${selectedLabel}` : ''} today?
-          </p>
-          <textarea
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder="I am staying clean today because…"
-            rows={3}
-            className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-3 text-[#E8E8F0] placeholder-[#8B8FA8] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47]/50 focus:border-[#C17A47]/50 resize-none transition-all"
-          />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-[#8B8FA8] text-sm">
+              Why are you staying clean{selectedTimerId ? ` from ${selectedLabel}` : ''} today?
+            </p>
+            <textarea
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="I am staying clean today because…"
+              rows={3}
+              className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-3 text-[#E8E8F0] placeholder-[#8B8FA8] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47]/50 focus:border-[#C17A47]/50 resize-none transition-all"
+            />
+          </div>
+
+          {/* Quick Reasons List */}
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold text-[#8B8FA8] uppercase tracking-wider">
+              Or select a reason
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_REASONS.map((reason) => {
+                const isSelected = text === reason
+                return (
+                  <button
+                    key={reason}
+                    type="button"
+                    onClick={() => isSelected ? setText('') : setText(reason)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border text-left transition-all duration-200 cursor-pointer active:scale-98 select-none ${
+                      isSelected
+                        ? 'bg-[#C17A47]/10 border-[#C17A47] text-[#E8955A] shadow-[0_2px_8px_rgba(193,122,71,0.15)]'
+                        : 'bg-[#1E2028] border-[#2A2D38] text-[#8B8FA8] hover:border-[#8B8FA8]/40 hover:text-[#E8E8F0]'
+                    }`}
+                  >
+                    {reason}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={saving || !text.trim()}
