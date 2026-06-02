@@ -40,6 +40,13 @@ export default function MotivationalMessage({ tone = 'gentle' }) {
       <div className="absolute inset-0 bg-gradient-to-br from-[#C17A47]/5 via-transparent to-transparent pointer-events-none rounded-2xl" />
       <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#C17A47] to-[#C17A47]/20 rounded-l-2xl" />
 
+      <div className="relative flex items-center justify-between mb-3">
+        <p className="text-[#C17A47] text-[10px] uppercase tracking-widest font-semibold">✦ Daily affirmation</p>
+        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border border-[#2A2D38] text-[#8B8FA8]">
+          {tone === 'tough' ? 'Tough love' : 'Gentle'}
+        </span>
+      </div>
+
       <p className="relative text-[#B0B3C6] text-base italic leading-relaxed pl-3" style={{ fontFamily: 'Lora, Georgia, serif' }}>
         &quot;{quote}&quot;
       </p>
