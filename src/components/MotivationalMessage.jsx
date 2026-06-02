@@ -31,13 +31,18 @@ const TODAY_SEED = Math.floor(Date.now() / 86400000)
 export default function MotivationalMessage({ tone = 'gentle' }) {
   const quote = useMemo(() => {
     const pool = tone === 'tough' ? TOUGH_QUOTES : GENTLE_QUOTES
-    const dayIndex = TODAY_SEED % pool.length
-    return pool[dayIndex]
+    return pool[TODAY_SEED % pool.length]
   }, [tone])
 
   return (
-    <div className="bg-gradient-to-br from-indigo-900/40 to-slate-800 rounded-2xl p-6 border border-indigo-500/20">
-      <p className="text-slate-200 text-base italic leading-relaxed">&quot;{quote}&quot;</p>
+    <div className="relative bg-[#16181F] border border-[#2A2D38] rounded-2xl p-6 overflow-hidden">
+      {/* Subtle gradient accent */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#C17A47]/5 via-transparent to-transparent pointer-events-none rounded-2xl" />
+      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#C17A47] to-[#C17A47]/20 rounded-l-2xl" />
+
+      <p className="relative text-[#B0B3C6] text-base italic leading-relaxed pl-3" style={{ fontFamily: 'Lora, Georgia, serif' }}>
+        &quot;{quote}&quot;
+      </p>
     </div>
   )
 }

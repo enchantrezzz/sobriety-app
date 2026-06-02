@@ -2,19 +2,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #C17A47;
-  --color-primary-dark: #A5622F;
-  --color-primary-light: #E8C4A0;
-  --color-surface: #FFFAF4;
-  --color-surface-2: #F5EDE0;
-  --color-warm-bg: #FDF6EE;
-  --color-warm-border: #E8D9C8;
-  --color-warm-border-2: #DCC9B4;
-  --color-warm-muted: #8C7264;
-  --color-warm-text: #3D2B1F;
-  --color-warm-text-2: #5C4033;
-  --color-sage: #7C9B6E;
-  --color-sage-bg: #EEF5EB;
+  /* Brand */
+  --color-primary:       #C17A47;
+  --color-primary-dark:  #A5622F;
+  --color-primary-light: #E8955A;
+
+  /* Dark surfaces */
+  --color-surface:    #16181F;
+  --color-surface-2:  #1E2028;
+  --color-surface-3:  #252830;
+
+  /* Page bg */
+  --color-warm-bg:    #0F1117;
+
+  /* Borders */
+  --color-warm-border:   #2A2D38;
+  --color-warm-border-2: #333644;
+
+  /* Text */
+  --color-warm-text:   #E8E8F0;
+  --color-warm-text-2: #B0B3C6;
+  --color-warm-muted:  #8B8FA8;
+
+  /* Accent colors */
+  --color-sage:    #6DBF87;
+  --color-sage-bg: #1A2E22;
 }
 
 *, *::before, *::after {
@@ -23,8 +35,8 @@
 
 body {
   margin: 0;
-  background-color: #FDF6EE;
-  color: #3D2B1F;
+  background-color: #0F1117;
+  color: #E8E8F0;
   font-family: 'Nunito', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -38,6 +50,12 @@ h1, h2, h3 {
   display: flex;
   flex-direction: column;
 }
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2A2D38; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3A3E50; }
 
 @layer utilities {
   .surface-bg {
@@ -56,11 +74,27 @@ h1, h2, h3 {
     border-color: var(--color-warm-border-2);
   }
 
-  /* Reusable “card” surface: consistent background + border + radius.
-     (Shadows/padding should remain per-component for now.) */
   .card {
     background-color: var(--color-surface);
     border: 1px solid var(--color-warm-border);
-    border-radius: 1rem; /* rounded-2xl */
+    border-radius: 1rem;
+  }
+
+  /* Form inputs — dark style */
+  .input-dark {
+    background-color: var(--color-surface-2);
+    border: 1px solid var(--color-warm-border);
+    border-radius: 0.625rem;
+    padding: 0.625rem 1rem;
+    color: var(--color-warm-text);
+    font-size: 0.875rem;
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  .input-dark::placeholder { color: var(--color-warm-muted); }
+  .input-dark:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(193,122,71,0.15);
   }
 }

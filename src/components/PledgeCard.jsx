@@ -7,10 +7,10 @@ function PledgeChip({ label, selected, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
         selected
-          ? 'bg-[#C17A47] border-[#C17A47] text-white'
-          : 'bg-[#F5EDE0] border-[#DCC9B4] text-[#5C4033] hover:border-[#C17A47]/50 hover:text-[#3D2B1F]'
+          ? 'bg-[#C17A47] border-[#C17A47] text-white shadow-[0_0_12px_rgba(193,122,71,0.3)]'
+          : 'bg-[#1E2028] border-[#2A2D38] text-[#8B8FA8] hover:border-[#C17A47]/40 hover:text-[#E8E8F0]'
       }`}
     >
       {label}
@@ -20,11 +20,13 @@ function PledgeChip({ label, selected, onClick }) {
 
 function PledgeEntry({ pledge, timerName }) {
   return (
-    <div className="bg-[#F5EDE0] rounded-xl px-4 py-3">
+    <div className="bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-3">
       {timerName && (
-        <span className="text-xs font-medium text-[#C17A47] mb-1 block">{timerName}</span>
+        <span className="text-xs font-semibold text-[#C17A47] mb-1 block">{timerName}</span>
       )}
-      <p className="text-[#5C4033] text-sm italic" style={{ fontFamily: 'Lora, Georgia, serif' }}>&quot;{pledge.pledge_text}&quot;</p>
+      <p className="text-[#B0B3C6] text-sm italic" style={{ fontFamily: 'Lora, Georgia, serif' }}>
+        &quot;{pledge.pledge_text}&quot;
+      </p>
     </div>
   )
 }
@@ -60,13 +62,13 @@ export default function PledgeCard() {
     : 'General'
 
   return (
-    <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
+    <div className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-[#3D2B1F]">Today&apos;s Pledge</h3>
+        <h3 className="text-lg font-semibold text-[#E8E8F0]">Today&apos;s Pledge</h3>
         {pledgeStreak > 0 && (
-          <span className="text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-medium">
-            {pledgeStreak}-day streak
+          <span className="text-xs bg-[#C17A47]/15 text-[#E8955A] border border-[#C17A47]/20 px-2.5 py-1 rounded-full font-semibold">
+            🔥 {pledgeStreak}-day streak
           </span>
         )}
       </div>
@@ -90,18 +92,19 @@ export default function PledgeCard() {
         </div>
       )}
 
-      {/* Pledge form or existing pledge */}
       {existingPledge ? (
         <div className="space-y-2">
-          <PledgeEntry
-            pledge={existingPledge}
-            timerName={selectedTimerId ? selectedLabel : null}
-          />
-          <p className="text-[#A69080] text-xs mt-1">Pledge made today ✓</p>
+          <PledgeEntry pledge={existingPledge} timerName={selectedTimerId ? selectedLabel : null} />
+          <p className="text-[#6DBF87] text-xs mt-1 flex items-center gap-1">
+            <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Pledge made today
+          </p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
-          <p className="text-[#8C7264] text-sm">
+          <p className="text-[#8B8FA8] text-sm">
             Why are you staying clean{selectedTimerId ? ` from ${selectedLabel}` : ''} today?
           </p>
           <textarea
@@ -109,12 +112,12 @@ export default function PledgeCard() {
             onChange={e => setText(e.target.value)}
             placeholder="I am staying clean today because…"
             rows={3}
-            className="w-full bg-[#F5EDE0] border border-[#DCC9B4] rounded-lg px-4 py-2.5 text-[#3D2B1F] placeholder-[#A69080] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47] resize-none"
+            className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-3 text-[#E8E8F0] placeholder-[#8B8FA8] text-sm focus:outline-none focus:ring-2 focus:ring-[#C17A47]/50 focus:border-[#C17A47]/50 resize-none transition-all"
           />
           <button
             type="submit"
             disabled={saving || !text.trim()}
-            className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 text-white font-semibold py-2 rounded-lg text-sm transition-colors cursor-pointer"
+            className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-40 text-white font-bold py-2.5 rounded-xl text-sm transition-all shadow-[0_2px_12px_rgba(193,122,71,0.25)] hover:shadow-[0_4px_20px_rgba(193,122,71,0.35)] cursor-pointer"
           >
             {saving ? 'Saving…' : 'Make my pledge'}
           </button>
@@ -124,7 +127,7 @@ export default function PledgeCard() {
       {/* Other pledges today */}
       {todayPledges.length > 1 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs text-[#A69080] uppercase tracking-wider">Other pledges today</p>
+          <p className="text-[10px] text-[#8B8FA8] uppercase tracking-widest font-semibold">Other pledges today</p>
           {todayPledges
             .filter(p => selectedTimerId ? p.timer_id !== selectedTimerId : p.timer_id !== null)
             .map(p => {

@@ -28,23 +28,29 @@ export default function Settings() {
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-[#3D2B1F]">Settings</h1>
+      <h1 className="text-2xl font-bold text-[#E8E8F0]">Settings</h1>
 
-      <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)] space-y-5">
+      {/* Preferences card */}
+      <div className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.3)] space-y-6">
+        {/* Email */}
         <div>
-          <label className="block text-sm font-medium text-[#5C4033] mb-1">Email</label>
-          <p className="text-[#8C7264] text-sm">{user?.email}</p>
+          <label className="block text-xs font-semibold text-[#8B8FA8] uppercase tracking-widest mb-1">Email</label>
+          <p className="text-[#B0B3C6] text-sm">{user?.email}</p>
         </div>
 
+        <div className="h-px bg-[#2A2D38]" />
+
+        {/* Motivational tone */}
         <div>
-          <label className="block text-sm font-medium text-[#5C4033] mb-3">Motivational tone</label>
+          <label className="block text-sm font-semibold text-[#E8E8F0] mb-1">Motivational tone</label>
+          <p className="text-[#8B8FA8] text-xs mb-4">Controls the style of your daily message.</p>
           <div className="flex gap-3">
             <button
               onClick={() => setTone('gentle')}
-              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
+              className={`flex-1 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                 tone === 'gentle'
-                  ? 'bg-[#C17A47] text-white'
-                  : 'border border-[#DCC9B4] text-[#5C4033] hover:bg-[#F5EDE0]'
+                  ? 'bg-[#C17A47] text-white shadow-[0_4px_16px_rgba(193,122,71,0.35)]'
+                  : 'bg-[#1E2028] border border-[#2A2D38] text-[#8B8FA8] hover:border-[#333644] hover:text-[#E8E8F0]'
               }`}
             >
               Gentle
@@ -52,10 +58,10 @@ export default function Settings() {
             </button>
             <button
               onClick={() => setTone('tough')}
-              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
+              className={`flex-1 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                 tone === 'tough'
-                  ? 'bg-[#C17A47] text-white'
-                  : 'border border-[#DCC9B4] text-[#5C4033] hover:bg-[#F5EDE0]'
+                  ? 'bg-[#C17A47] text-white shadow-[0_4px_16px_rgba(193,122,71,0.35)]'
+                  : 'bg-[#1E2028] border border-[#2A2D38] text-[#8B8FA8] hover:border-[#333644] hover:text-[#E8E8F0]'
               }`}
             >
               Tough Love
@@ -67,17 +73,22 @@ export default function Settings() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
+          className={`w-full font-bold py-2.5 rounded-xl text-sm transition-all cursor-pointer ${
+            saved
+              ? 'bg-[#6DBF87]/20 border border-[#6DBF87]/30 text-[#6DBF87]'
+              : 'bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 text-white shadow-[0_2px_12px_rgba(193,122,71,0.25)] hover:shadow-[0_4px_20px_rgba(193,122,71,0.35)]'
+          }`}
         >
-          {saved ? 'Saved ✓' : saving ? 'Saving…' : 'Save settings'}
+          {saved ? '✓ Saved' : saving ? 'Saving…' : 'Save settings'}
         </button>
       </div>
 
-      <div className="card p-6 shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
-        <h2 className="text-lg font-semibold text-[#3D2B1F] mb-4">Account</h2>
+      {/* Account card */}
+      <div className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
+        <h2 className="text-base font-semibold text-[#E8E8F0] mb-4">Account</h2>
         <button
           onClick={handleSignOut}
-          className="w-full border border-red-300 text-red-500 hover:bg-red-50 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer"
+          className="w-full border border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer"
         >
           Sign out
         </button>

@@ -25,10 +25,7 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.')
-      return
-    }
+    if (password.length < 6) { setError('Password must be at least 6 characters.'); return }
     setError('')
     setLoading(true)
     try {
@@ -53,74 +50,72 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDF6EE] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0F1117] px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-full bg-[#C17A47]/15 flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-              <path d="M12 2C6 2 2 7 2 12s4 10 10 10 10-4.5 10-10S18 2 12 2z"/><path d="M12 8v4l3 3"/>
+          <div className="w-14 h-14 rounded-2xl bg-[#C17A47]/15 border border-[#C17A47]/20 flex items-center justify-center mx-auto mb-5 shadow-[0_0_32px_rgba(193,122,71,0.2)]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+              <path d="M12 2C6 2 2 7 2 12s4 10 10 10 10-4.5 10-10S18 2 12 2z"/>
+              <path d="M12 8v4l3 3"/>
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-[#3D2B1F] mb-2">Start your journey</h1>
-          <p className="text-[#8C7264]">One day at a time. We&apos;re with you.</p>
+          <h1 className="text-3xl font-bold text-[#E8E8F0] mb-2">Start your journey</h1>
+          <p className="text-[#8B8FA8]">One day at a time. We&apos;re with you.</p>
         </div>
 
-        <div className="bg-[#FFFAF4] rounded-2xl p-8 shadow-[0_4px_20px_rgba(139,90,43,0.1)] border border-[#E8D9C8] space-y-5">
+        <div className="bg-[#16181F] rounded-2xl p-8 shadow-[0_8px_40px_rgba(0,0,0,0.4)] border border-[#2A2D38] space-y-5">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl px-4 py-3">
               {error}
             </div>
           )}
 
-          {/* Google button */}
           <button
             onClick={handleGoogle}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-semibold py-2.5 rounded-lg transition-colors border border-gray-200 cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 bg-[#1E2028] hover:bg-[#252830] disabled:opacity-50 text-[#E8E8F0] font-semibold py-2.5 rounded-xl transition-colors border border-[#2A2D38] hover:border-[#333644] cursor-pointer"
           >
             <GoogleIcon />
             {googleLoading ? 'Redirecting…' : 'Sign up with Google'}
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-[#E8D9C8]" />
-            <span className="text-[#A69080] text-xs">or</span>
-            <div className="flex-1 h-px bg-[#E8D9C8]" />
+            <div className="flex-1 h-px bg-[#2A2D38]" />
+            <span className="text-[#8B8FA8] text-xs">or</span>
+            <div className="flex-1 h-px bg-[#2A2D38]" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#5C4033] mb-1.5">Name</label>
+              <label className="block text-sm font-medium text-[#B0B3C6] mb-1.5">Name</label>
               <input
                 type="text"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 required
-                className="w-full bg-[#F5EDE0] border border-[#DCC9B4] rounded-lg px-4 py-2.5 text-[#3D2B1F] placeholder-[#A69080] focus:outline-none focus:ring-2 focus:ring-[#C17A47] focus:border-transparent"
+                className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-2.5 text-[#E8E8F0] placeholder-[#8B8FA8] focus:outline-none focus:ring-2 focus:ring-[#C17A47]/40 focus:border-[#C17A47]/50 transition-all"
                 placeholder="Your first name"
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-[#5C4033] mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-[#B0B3C6] mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                className="w-full bg-[#F5EDE0] border border-[#DCC9B4] rounded-lg px-4 py-2.5 text-[#3D2B1F] placeholder-[#A69080] focus:outline-none focus:ring-2 focus:ring-[#C17A47] focus:border-transparent"
+                className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-2.5 text-[#E8E8F0] placeholder-[#8B8FA8] focus:outline-none focus:ring-2 focus:ring-[#C17A47]/40 focus:border-[#C17A47]/50 transition-all"
                 placeholder="you@example.com"
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-[#5C4033] mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-[#B0B3C6] mb-1.5">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full bg-[#F5EDE0] border border-[#DCC9B4] rounded-lg px-4 py-2.5 text-[#3D2B1F] placeholder-[#A69080] focus:outline-none focus:ring-2 focus:ring-[#C17A47] focus:border-transparent"
+                className="w-full bg-[#1E2028] border border-[#2A2D38] rounded-xl px-4 py-2.5 text-[#E8E8F0] placeholder-[#8B8FA8] focus:outline-none focus:ring-2 focus:ring-[#C17A47]/40 focus:border-[#C17A47]/50 transition-all"
                 placeholder="Min. 6 characters"
               />
             </div>
@@ -128,16 +123,16 @@ export default function Signup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors cursor-pointer"
+              className="w-full bg-[#C17A47] hover:bg-[#A5622F] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-xl transition-all shadow-[0_2px_16px_rgba(193,122,71,0.3)] hover:shadow-[0_4px_24px_rgba(193,122,71,0.4)] cursor-pointer"
             >
               {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-[#8C7264] text-sm mt-6">
+        <p className="text-center text-[#8B8FA8] text-sm mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#C17A47] hover:text-[#A5622F] font-medium transition-colors">
+          <Link to="/login" className="text-[#C17A47] hover:text-[#E8955A] font-semibold transition-colors">
             Sign in
           </Link>
         </p>

@@ -63,11 +63,11 @@ function SignOutIcon() {
 }
 
 const links = [
-  { to: '/dashboard', label: 'Home', Icon: HomeIcon },
-  { to: '/timers', label: 'Timers', Icon: TimerIcon },
-  { to: '/triggers', label: 'Triggers', Icon: JournalIcon },
-  { to: '/chat', label: 'Vent', Icon: ChatIcon },
-  { to: '/insights', label: 'Insights', Icon: InsightsIcon },
+  { to: '/dashboard', label: 'Home',     Icon: HomeIcon    },
+  { to: '/timers',    label: 'Timers',   Icon: TimerIcon   },
+  { to: '/triggers',  label: 'Triggers', Icon: JournalIcon },
+  { to: '/chat',      label: 'Vent',     Icon: ChatIcon    },
+  { to: '/insights',  label: 'Insights', Icon: InsightsIcon },
 ]
 
 export default function Navbar() {
@@ -81,21 +81,30 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-56 shrink-0 surface-bg border-r border-subtle min-h-screen">
-        <div className="px-6 py-6 border-b border-subtle">
-          <span className="text-xl font-bold text-[#3D2B1F]" style={{ fontFamily: 'Lora, Georgia, serif' }}>Sobriety</span>
+      {/* ── Desktop sidebar ── */}
+      <aside className="hidden md:flex flex-col w-56 shrink-0 bg-[#13151C] border-r border-[#2A2D38] min-h-screen">
+        <div className="px-6 py-6 border-b border-[#2A2D38]">
+          <span
+            className="text-xl font-bold text-[#E8E8F0]"
+            style={{ fontFamily: 'Lora, Georgia, serif' }}
+          >
+            Sobriety
+          </span>
+          <span className="block text-[10px] text-[#C17A47] uppercase tracking-widest mt-0.5 font-semibold">
+            One day at a time
+          </span>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+
+        <nav className="flex-1 px-3 py-4 space-y-0.5">
           {links.map(({ to, label, Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#C17A47]/15 text-[#C17A47]'
-                    : 'text-[#5C4033] hover:bg-[#F5EDE0] hover:text-[#3D2B1F]'
+                    ? 'bg-[#C17A47]/15 text-[#E8955A] border border-[#C17A47]/20'
+                    : 'text-[#8B8FA8] hover:bg-[#1E2028] hover:text-[#E8E8F0]'
                 }`
               }
             >
@@ -104,12 +113,15 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
-        <div className="px-3 py-4 border-t border-subtle">
+
+        <div className="px-3 py-4 border-t border-[#2A2D38] space-y-0.5">
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                isActive ? 'bg-[#C17A47]/15 text-[#C17A47]' : 'text-[#5C4033] hover:bg-[#F5EDE0] hover:text-[#3D2B1F]'
+              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-[#C17A47]/15 text-[#E8955A] border border-[#C17A47]/20'
+                  : 'text-[#8B8FA8] hover:bg-[#1E2028] hover:text-[#E8E8F0]'
               }`
             }
           >
@@ -117,23 +129,23 @@ export default function Navbar() {
           </NavLink>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-[#8C7264] hover:bg-[#F5EDE0] hover:text-[#3D2B1F] transition-colors mt-1 cursor-pointer"
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#8B8FA8] hover:bg-[#1E2028] hover:text-[#E8E8F0] transition-all mt-1 cursor-pointer"
           >
             <SignOutIcon /> Sign out
           </button>
         </div>
       </aside>
 
-      {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 surface-bg border-t border-subtle z-50">
+      {/* ── Mobile bottom nav ── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#13151C] border-t border-[#2A2D38] z-50">
         <div className="flex justify-around items-center h-16">
           {links.map(({ to, label, Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
-                  isActive ? 'text-[#C17A47]' : 'text-[#A69080]'
+                `flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                  isActive ? 'text-[#E8955A]' : 'text-[#8B8FA8]'
                 }`
               }
             >
