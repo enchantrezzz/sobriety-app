@@ -91,6 +91,28 @@ export default function AIChat() {
     setSessionId(null)
   }
 
+  async function deleteSession(id, e) {
+    e.stopPropagation()
+    const confirmDelete = window.confirm("Are you sure you want to delete this conversation?")
+    if (!confirmDelete) return
+
+    try {
+      const { error } = await supabase
+        .from('chat_sessions')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setSessions(prev => prev.filter(s => s.id !== id))
+      if (sessionId === id) {
+        startNewSession()
+      }
+    } catch (err) {
+      alert("Failed to delete the conversation: " + err.message)
+    }
+  }
+
   async function sendMessage() {
     const text = input.trim()
     if (!text || loading) return
@@ -209,27 +231,45 @@ export default function AIChat() {
                 {sessions.length === 0 && (
                   <p className="text-[#8B8FA8] text-xs px-3 py-4 text-center italic">No past conversations yet.</p>
                 )}
-                {sessions.map(s => (
-                  <button
-                    key={s.id}
-                    onClick={() => {
-                      loadSession(s)
-                      setSidebarOpen(false)
-                    }}
-                    className={`w-full text-left px-4 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
-                      s.id === sessionId
-                        ? 'bg-[#C17A47]/10 border-[#C17A47]/30 text-[#E8955A]'
-                        : 'bg-transparent border-transparent hover:bg-[#1E2028]/60 text-[#8B8FA8] hover:text-[#E8E8F0]'
-                    }`}
-                  >
-                    <p className="font-medium text-xs truncate leading-relaxed">
-                      {sessionPreview(s.messages)}
-                    </p>
-                    <span className="text-[10px] text-[#8B8FA8]/80 mt-1.5 block">
-                      {formatDate(s.updated_at)}
-                    </span>
-                  </button>
-                ))}
+                {sessions.map(s => {
+                  const isActive = s.id === sessionId
+                  return (
+                    <div
+                      key={s.id}
+                      className="group relative flex items-center w-full"
+                    >
+                      <button
+                        onClick={() => {
+                          loadSession(s)
+                          setSidebarOpen(false)
+                        }}
+                        className={`w-full text-left pl-4 pr-10 py-3.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-[#C17A47]/10 border-[#C17A47]/30 text-[#E8955A]'
+                            : 'bg-transparent border-transparent hover:bg-[#1E2028]/60 text-[#8B8FA8] hover:text-[#E8E8F0]'
+                        }`}
+                      >
+                        <p className="font-medium text-xs truncate leading-relaxed">
+                          {sessionPreview(s.messages)}
+                        </p>
+                        <span className="text-[10px] text-[#8B8FA8]/80 mt-1.5 block">
+                          {formatDate(s.updated_at)}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={(e) => deleteSession(s.id, e)}
+                        className="absolute right-2.5 opacity-0 group-hover:opacity-100 hover:text-red-400 text-[#8B8FA8] p-1.5 rounded-lg hover:bg-[#1E2028] transition-all duration-200 cursor-pointer z-10"
+                        title="Delete conversation"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  )
+                })}
               </div>
             </motion.div>
           </>
