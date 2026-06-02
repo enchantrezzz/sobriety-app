@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useApp } from '../context/AppContext'
 
 const MILESTONE_MESSAGES = {
@@ -13,23 +14,47 @@ const MILESTONE_MESSAGES = {
 
 export default function MilestoneAlert() {
   const { milestoneAlert, dismissMilestone } = useApp()
+  const btnRef = useRef(null)
+
+  useEffect(() => {
+    if (!milestoneAlert) return
+    btnRef.current?.focus()
+
+    function onKeyDown(e) {
+      if (e.key === 'Escape') dismissMilestone()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [milestoneAlert, dismissMilestone])
+
   if (!milestoneAlert) return null
 
   const { timerName, days } = milestoneAlert
   const message = MILESTONE_MESSAGES[days] ?? `${days} days clean!`
+  const titleId = 'milestone-title'
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-      <div className="bg-[#FFFAF4] border border-[#C17A47]/30 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+    <div
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+      onClick={dismissMilestone}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="bg-[#FFFAF4] border border-[#C17A47]/30 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#C17A47" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8" aria-hidden="true">
             <circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-[#3D2B1F] mb-2">{days}-Day Milestone!</h2>
+        <h2 id={titleId} className="text-2xl font-bold text-[#3D2B1F] mb-2">{days}-Day Milestone!</h2>
         <p className="text-[#5C4033] text-sm mb-1 font-medium">{timerName}</p>
         <p className="text-[#C17A47] mt-3 mb-6" style={{ fontFamily: 'Lora, Georgia, serif' }}>{message}</p>
         <button
+          ref={btnRef}
           onClick={dismissMilestone}
           className="bg-[#C17A47] hover:bg-[#A5622F] text-white font-semibold px-6 py-2.5 rounded-lg transition-colors cursor-pointer"
         >

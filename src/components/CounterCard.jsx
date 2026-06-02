@@ -28,6 +28,11 @@ function milestoneLabel(d) {
   return '1yr'
 }
 
+function getLatestMilestoneReached(days) {
+  const reached = MILESTONES_DAYS.filter(m => m <= days)
+  return reached.length ? reached[reached.length - 1] : null
+}
+
 // ── Kebab menu ──────────────────────────────────────────────────
 function KebabMenu({ onArchive, onDelete }) {
   const [open, setOpen] = useState(false)
@@ -244,6 +249,8 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
     showMilestone(timer.addiction_name, milestoneToShow)
   }, [elapsed.days, showMilestone, timer.addiction_name, timer.id, timer.started_at])
 
+  const latestMilestoneReached = getLatestMilestoneReached(elapsed.days)
+
   return (
     <div className="bg-[#FFFAF4] rounded-2xl border border-[#E8D9C8] overflow-hidden shadow-[0_2px_12px_rgba(139,90,43,0.07)]">
       {/* Header */}
@@ -253,6 +260,11 @@ export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
           <p className="text-[#C17A47]/80 text-xs mt-0.5">
             Since {new Date(timer.started_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </p>
+          {latestMilestoneReached && (
+            <span className="mt-2 inline-flex items-center text-[11px] font-semibold text-[#C17A47] bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1.5">
+              Latest milestone: {milestoneLabel(latestMilestoneReached)}
+            </span>
+          )}
         </div>
         <KebabMenu onArchive={onArchive} onDelete={onDelete} />
       </div>
