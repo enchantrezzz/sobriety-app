@@ -89,98 +89,98 @@ function MilestoneTrack({ days }) {
 
   const nextIdx = MILESTONES_DAYS.findIndex(m => m > days)
   const allDone = nextIdx === -1
-  const endIdx = allDone
-    ? MILESTONES_DAYS.length - 1
-    : Math.min(nextIdx + 1, MILESTONES_DAYS.length - 1)
 
-  const trackEnd = MILESTONES_DAYS[endIdx]
-  const pct = Math.min((days / trackEnd) * 100, 100)
-  const visible = MILESTONES_DAYS.slice(0, endIdx + 1)
+  // Determine the segment: from last milestone to next milestone
+  const prevMilestone = allDone
+    ? MILESTONES_DAYS[MILESTONES_DAYS.length - 1]
+    : nextIdx === 0 ? 0 : MILESTONES_DAYS[nextIdx - 1]
+  const nextMilestone = allDone
+    ? MILESTONES_DAYS[MILESTONES_DAYS.length - 1]
+    : MILESTONES_DAYS[nextIdx]
 
-  const labelThreshold = 12
-  const labeledMilestones = visible.filter((m, i, arr) => {
-    if (i === 0) return true
-    const prev = (arr[i - 1] / trackEnd) * 100
-    const curr = (m / trackEnd) * 100
-    return curr - prev >= labelThreshold
-  })
-
-  const daysToNext = allDone ? 0 : MILESTONES_DAYS[nextIdx] - days
-  const pctToNext = allDone ? 100 : Math.round(pct)
+  // Progress within this segment (0-100)
+  const segmentRange = nextMilestone - prevMilestone
+  const segmentProgress = allDone ? 100 : segmentRange === 0 ? 100 : Math.min(((days - prevMilestone) / segmentRange) * 100, 100)
+  const daysToNext = allDone ? 0 : nextMilestone - days
 
   return (
     <div className="mt-5 px-1">
       <div className="flex items-center justify-between mb-3">
         <p className="text-[10px] text-[#8B8FA8] uppercase tracking-widest font-semibold">Progress</p>
         {!allDone && (
-          <span className="text-[10px] text-[#C17A47] font-bold tabular-nums">{pctToNext}%</span>
+          <span className="text-[10px] text-[#C17A47] font-bold tabular-nums">{Math.round(segmentProgress)}%</span>
         )}
       </div>
 
-      {/* Track */}
-      <div className="relative h-2 mx-2">
+      {/* Track — shows only prev milestone → next milestone */}
+      <div className="relative h-2.5">
+        {/* Background */}
         <div className="absolute inset-0 bg-[#2A2D38] rounded-full" />
 
         {/* Fill */}
         <div
           className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out"
           style={{
-            width: mounted ? `calc(${pct}% * (100% - 0px) / 100%)` : '0%',
+            width: mounted ? `${segmentProgress}%` : '0%',
             background: 'linear-gradient(to right, #C17A47, #E8955A)',
+            boxShadow: mounted ? '0 0 12px rgba(193,122,71,0.4)' : 'none',
           }}
         />
 
-        {/* Milestone dots */}
-        {visible.map((m) => {
-          const markerPct = (m / trackEnd) * 100
-          const completed = days >= m
-          const isNext = !allDone && m === MILESTONES_DAYS[nextIdx]
-          const showLabel = labeledMilestones.includes(m)
-          return (
-            <div
-              key={m}
-              className="absolute top-1/2 flex flex-col items-center"
-              style={{ left: `${markerPct}%`, transform: 'translate(-50%, -50%)' }}
-            >
-              <div className={`
-                relative flex items-center justify-center rounded-full transition-all duration-500 z-10
-                ${completed
-                  ? 'w-3.5 h-3.5 bg-[#C17A47] shadow-[0_0_8px_rgba(193,122,71,0.8)]'
-                  : isNext
-                  ? 'w-3.5 h-3.5 bg-[#16181F] border-2 border-[#C17A47] shadow-[0_0_10px_rgba(193,122,71,0.5)] animate-pulse'
-                  : 'w-2.5 h-2.5 bg-[#2A2D38] border border-[#333644]'}
-              `}>
-                {completed && (
-                  <svg className="w-2 h-2 text-white" viewBox="0 0 8 8" fill="none">
-                    <path d="M1.5 4L3 5.5L6.5 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-              </div>
-              {showLabel && (
-                <span className={`
-                  absolute top-[14px] text-[10px] font-semibold whitespace-nowrap
-                  ${completed ? 'text-[#C17A47]' : isNext ? 'text-[#E8955A]' : 'text-[#8B8FA8]'}
-                `}>
-                  {milestoneLabel(m)}
-                </span>
-              )}
-            </div>
-          )
-        })}
+        {/* Left endpoint — last milestone (completed) */}
+        <div
+          className="absolute top-1/2 left-0 z-10"
+          style={{ transform: 'translate(-50%, -50%)' }}
+        >
+          <div className="w-5 h-5 rounded-full bg-[#C17A47] shadow-[0_0_10px_rgba(193,122,71,0.6)] flex items-center justify-center">
+            <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 8 8" fill="none">
+              <path d="M1.5 4L3 5.5L6.5 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
 
-        {/* Current position dot */}
-        {days > 0 && pct < 99 && (
+        {/* Right endpoint — next milestone (target) */}
+        <div
+          className="absolute top-1/2 right-0 z-10"
+          style={{ transform: 'translate(50%, -50%)' }}
+        >
+          {allDone ? (
+            <div className="w-5 h-5 rounded-full bg-[#C17A47] shadow-[0_0_10px_rgba(193,122,71,0.6)] flex items-center justify-center">
+              <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 8 8" fill="none">
+                <path d="M1.5 4L3 5.5L6.5 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          ) : (
+            <div className="relative flex items-center justify-center">
+              <span className="absolute inline-flex h-5 w-5 rounded-full bg-[#C17A47] opacity-20 animate-ping" />
+              <div className="w-5 h-5 rounded-full bg-[#16181F] border-2 border-[#C17A47]/60 shadow-[0_0_10px_rgba(193,122,71,0.3)]" />
+            </div>
+          )}
+        </div>
+
+        {/* Current position dot (between endpoints) */}
+        {!allDone && segmentProgress > 2 && segmentProgress < 96 && (
           <div
             className="absolute top-1/2 z-20 transition-all duration-1000 ease-out"
-            style={{ left: mounted ? `${pct}%` : '0%', transform: 'translate(-50%, -50%)' }}
+            style={{ left: mounted ? `${segmentProgress}%` : '0%', transform: 'translate(-50%, -50%)' }}
           >
-            <div className="w-4 h-4 rounded-full bg-[#16181F] border-2 border-[#C17A47] shadow-[0_0_14px_rgba(193,122,71,0.9)]" />
+            <div className="w-4 h-4 rounded-full bg-[#16181F] border-2 border-[#E8955A] shadow-[0_0_14px_rgba(232,149,90,0.9)]" />
           </div>
         )}
       </div>
 
+      {/* Labels beneath the track */}
+      <div className="flex items-center justify-between mt-2 px-0">
+        <span className="text-[11px] font-semibold text-[#C17A47] tabular-nums">
+          {prevMilestone === 0 ? 'Start' : milestoneLabel(prevMilestone)}
+        </span>
+        <span className="text-[11px] font-semibold text-[#E8955A] tabular-nums">
+          {allDone ? '✦ Complete' : milestoneLabel(nextMilestone)}
+        </span>
+      </div>
+
       {/* Bottom row */}
-      <div className="mt-8">
+      <div className="mt-4">
         {allDone ? (
           <div className="text-center space-y-1">
             <p className="text-[#C17A47] text-sm font-bold">All milestones reached ✦</p>
@@ -193,12 +193,12 @@ function MilestoneTrack({ days }) {
               <p className="text-[#8B8FA8] text-[10px] uppercase tracking-wide">days</p>
             </div>
             <div className="flex-1 flex justify-center">
-              <span className="text-[#C17A47] text-xs font-semibold bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1 text-center whitespace-nowrap">
-                {daysToNext}d to {milestoneLabel(MILESTONES_DAYS[nextIdx])}
+              <span className="text-[#C17A47] text-xs font-semibold bg-[#C17A47]/10 border border-[#C17A47]/20 rounded-full px-3 py-1 text-center whitespace-nowrap tabular-nums">
+                {daysToNext}d to {milestoneLabel(nextMilestone)}
               </span>
             </div>
             <div className="text-right min-w-[32px]">
-              <p className="text-[#8B8FA8] text-sm font-bold tabular-nums">{trackEnd}</p>
+              <p className="text-[#8B8FA8] text-sm font-bold tabular-nums">{nextMilestone}</p>
               <p className="text-[#8B8FA8] text-[10px] uppercase tracking-wide">goal</p>
             </div>
           </div>
