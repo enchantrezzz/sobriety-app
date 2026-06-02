@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { MILESTONES_DAYS } from '../hooks/useTimer'
+import { useApp } from '../context/AppContext'
+import {
+  getCrossedMilestones,
+  markMilestoneShown,
+  wasMilestoneShown,
+} from '../utils/milestones'
 
 function pad(n) {
   return String(n).padStart(2, '0')
@@ -210,12 +216,33 @@ function TimeUnit({ value, label }) {
 
 // ── Card ────────────────────────────────────────────────────────
 export default function CounterCard({ timer, onReset, onArchive, onDelete }) {
+  const { showMilestone } = useApp()
   const [elapsed, setElapsed] = useState(getElapsed(timer.started_at))
+  const previousDaysRef = useRef(elapsed.days)
 
   useEffect(() => {
     const id = setInterval(() => setElapsed(getElapsed(timer.started_at)), 1000)
     return () => clearInterval(id)
   }, [timer.started_at])
+
+  useEffect(() => {
+    const previousDays = previousDaysRef.current
+    const currentDays = elapsed.days
+    previousDaysRef.current = currentDays
+
+    if (currentDays <= previousDays) return
+
+    if (typeof window === 'undefined') return
+
+    const crossedMilestones = getCrossedMilestones(previousDays, currentDays, MILESTONES_DAYS)
+    if (crossedMilestones.length === 0) return
+
+    const milestoneToShow = crossedMilestones[crossedMilestones.length - 1]
+    if (wasMilestoneShown(window.localStorage, timer.id, timer.started_at, milestoneToShow)) return
+
+    markMilestoneShown(window.localStorage, timer.id, timer.started_at, milestoneToShow)
+    showMilestone(timer.addiction_name, milestoneToShow)
+  }, [elapsed.days, showMilestone, timer.addiction_name, timer.id, timer.started_at])
 
   return (
     <div className="bg-[#FFFAF4] rounded-2xl border border-[#E8D9C8] overflow-hidden shadow-[0_2px_12px_rgba(139,90,43,0.07)]">

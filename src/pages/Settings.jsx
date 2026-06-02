@@ -4,7 +4,7 @@ import { supabase } from '../supabaseClient'
 import { useNavigate } from 'react-router-dom'
 
 export default function Settings() {
-  const { user, profile, signOut } = useAuth()
+  const { user, profile, signOut, updateProfileTone } = useAuth()
   const navigate = useNavigate()
   const [tone, setTone] = useState(profile?.motivational_tone ?? 'gentle')
   const [saving, setSaving] = useState(false)
@@ -12,10 +12,13 @@ export default function Settings() {
 
   async function handleSave() {
     setSaving(true)
-    await supabase.from('profiles').update({ motivational_tone: tone }).eq('id', user.id)
-    setSaved(true)
+    const { error } = await supabase.from('profiles').update({ motivational_tone: tone }).eq('id', user.id)
+    if (!error) {
+      updateProfileTone(tone)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    }
     setSaving(false)
-    setTimeout(() => setSaved(false), 2000)
   }
 
   async function handleSignOut() {

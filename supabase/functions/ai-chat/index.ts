@@ -22,9 +22,13 @@ Deno.serve(async (req) => {
     const userId: string = payload.sub
     if (!userId) return new Response('Unauthorized', { status: 401, headers: corsHeaders })
 
-    const { messages, sessionId } = await req.json()
+    const { messages, sessionId, motivationalTone } = await req.json()
 
     const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY')! })
+
+    const toneInstruction = motivationalTone === 'tough'
+      ? 'Tone preference: tough love. Be direct, firm, and accountability-focused while remaining respectful and never shaming.'
+      : 'Tone preference: gentle. Be warm, soft, validating, and encouraging.'
 
     const systemPrompt = `You are a compassionate, judgment-free recovery support companion. You help people who are working on sobriety from addictions of all kinds.
 
@@ -36,6 +40,7 @@ Your role:
 - Treat relapses as data points for growth, never as failures
 - Gently remind the user of their strength and progress when appropriate
 - If the user seems to be in crisis or about to relapse imminently, respond with extra care, suggest the SAMHSA helpline (1-800-662-4357), and offer grounding techniques
+- ${toneInstruction}
 
 You are NOT a medical professional. Never provide medical advice. If the user describes a medical emergency, direct them to call emergency services.
 

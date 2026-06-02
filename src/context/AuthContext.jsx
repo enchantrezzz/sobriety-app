@@ -81,8 +81,12 @@ export function AuthProvider({ children }) {
     await supabase.auth.signOut()
   }
 
+  function updateProfileTone(motivationalTone) {
+    setProfile(prev => (prev ? { ...prev, motivational_tone: motivationalTone } : prev))
+  }
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signUp, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, signUp, signIn, signInWithGoogle, signOut, updateProfileTone }}>
       {children}
     </AuthContext.Provider>
   )

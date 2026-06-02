@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { supabase } from '../supabaseClient'
+import { useAuth } from '../context/AuthContext'
 
 const CRISIS_KEYWORDS = ["can't do this", 'give up', 'hopeless', 'relapse now', 'going to use', 'going to drink', 'want to die', "can't stop"]
 
@@ -32,6 +33,7 @@ function sessionPreview(messages) {
 }
 
 export default function AIChat() {
+  const { profile } = useAuth()
   const [messages, setMessages] = useState([GREETING])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -103,7 +105,11 @@ export default function AIChat() {
             'Authorization': `Bearer ${session.access_token}`,
             'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
           },
-          body: JSON.stringify({ messages: newMessages, sessionId }),
+          body: JSON.stringify({
+            messages: newMessages,
+            sessionId,
+            motivationalTone: profile?.motivational_tone ?? 'gentle',
+          }),
         }
       )
 

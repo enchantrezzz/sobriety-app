@@ -26,10 +26,12 @@ const TOUGH_QUOTES = [
   'This moment will define you. Choose wisely.',
 ]
 
+const TODAY_SEED = Math.floor(Date.now() / 86400000)
+
 export default function MotivationalMessage({ tone = 'gentle' }) {
   const quote = useMemo(() => {
     const pool = tone === 'tough' ? TOUGH_QUOTES : GENTLE_QUOTES
-    const dayIndex = Math.floor(Date.now() / 86400000) % pool.length
+    const dayIndex = TODAY_SEED % pool.length
     return pool[dayIndex]
   }, [tone])
 

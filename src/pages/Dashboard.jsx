@@ -3,6 +3,7 @@ import PledgeCard from '../components/PledgeCard'
 import { useTimer } from '../hooks/useTimer'
 import { useQuote } from '../hooks/useQuote'
 import CounterCard from '../components/CounterCard'
+import MotivationalMessage from '../components/MotivationalMessage'
 import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
@@ -31,6 +32,8 @@ export default function Dashboard() {
           )}
         </div>
       )}
+
+      <MotivationalMessage tone={profile?.motivational_tone ?? 'gentle'} />
 
       {/* Daily Bible verse */}
       {verse && (
