@@ -108,22 +108,34 @@ export default function AIChat() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
 
-      const { error } = await supabase
+      // First verify the row exists and belongs to this user
+      const { data: existing, error: selectError } = await supabase
+        .from('chat_sessions')
+        .select('id, user_id')
+        .eq('id', deleteTarget.id)
+        .single()
+
+      console.log('[delete] auth uid:', session.user.id)
+      console.log('[delete] row:', existing, 'selectError:', selectError)
+
+      if (selectError || !existing) throw new Error('Row not found: ' + (selectError?.message ?? 'no data'))
+      if (existing.user_id !== session.user.id) throw new Error('user_id mismatch — RLS would block this')
+
+      const { error, status, statusText } = await supabase
         .from('chat_sessions')
         .delete()
         .eq('id', deleteTarget.id)
         .eq('user_id', session.user.id)
 
+      console.log('[delete] status:', status, statusText, 'error:', error)
+
       if (error) throw error
 
-      // Optimistically update UI — if the row was already gone that's fine too
       setSessions(prev => prev.filter(s => s.id !== deleteTarget.id))
-      if (sessionId === deleteTarget.id) {
-        startNewSession()
-      }
+      if (sessionId === deleteTarget.id) startNewSession()
       setDeleteTarget(null)
     } catch (err) {
-      console.error('Failed to delete conversation:', err)
+      console.error('[delete] failed:', err)
       setDeleteError(err.message)
     } finally {
       setDeleting(false)
