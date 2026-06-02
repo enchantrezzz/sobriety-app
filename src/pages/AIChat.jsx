@@ -41,6 +41,8 @@ export default function AIChat() {
   const [sessionId, setSessionId] = useState(null)
   const [sessions, setSessions] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState(null) // { id, preview }
+  const [deleting, setDeleting] = useState(false)
   const bottomRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -91,25 +93,33 @@ export default function AIChat() {
     setSessionId(null)
   }
 
-  async function deleteSession(id, e) {
+  function promptDeleteSession(id, preview, e) {
     e.stopPropagation()
-    const confirmDelete = window.confirm("Are you sure you want to delete this conversation?")
-    if (!confirmDelete) return
+    setDeleteTarget({ id, preview })
+  }
 
+  async function confirmDeleteSession() {
+    if (!deleteTarget) return
+    setDeleting(true)
     try {
+      const { data: { user } } = await supabase.auth.getUser()
       const { error } = await supabase
         .from('chat_sessions')
         .delete()
-        .eq('id', id)
+        .eq('id', deleteTarget.id)
+        .eq('user_id', user.id)
 
       if (error) throw error
 
-      setSessions(prev => prev.filter(s => s.id !== id))
-      if (sessionId === id) {
+      setSessions(prev => prev.filter(s => s.id !== deleteTarget.id))
+      if (sessionId === deleteTarget.id) {
         startNewSession()
       }
+      setDeleteTarget(null)
     } catch (err) {
-      alert("Failed to delete the conversation: " + err.message)
+      console.error('Failed to delete conversation:', err.message)
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -258,7 +268,7 @@ export default function AIChat() {
                       </button>
 
                       <button
-                        onClick={(e) => deleteSession(s.id, e)}
+                        onClick={(e) => promptDeleteSession(s.id, sessionPreview(s.messages), e)}
                         className="absolute right-2.5 opacity-0 group-hover:opacity-100 hover:text-red-400 text-[#8B8FA8] p-1.5 rounded-lg hover:bg-[#1E2028] transition-all duration-200 cursor-pointer z-10"
                         title="Delete conversation"
                       >
@@ -430,6 +440,61 @@ export default function AIChat() {
           </div>
         </div>
       </div>
+
+      {/* ── Delete conversation modal ── */}
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] px-4"
+            onClick={() => !deleting && setDeleteTarget(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.18 }}
+              className="bg-[#16181F] border border-[#2A2D38] rounded-2xl p-6 max-w-sm w-full shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                </svg>
+              </div>
+              <h2 className="text-lg font-bold text-[#E8E8F0] text-center mb-1">Delete conversation?</h2>
+              <p className="text-[#8B8FA8] text-sm text-center mb-1">This will permanently remove:</p>
+              <p className="text-[#B0B3C6] text-sm text-center font-medium italic mb-5 px-2 truncate">
+                &quot;{deleteTarget.preview}&quot;
+              </p>
+              <div className="bg-red-500/8 border border-red-500/15 rounded-xl px-4 py-3 mb-5">
+                <p className="text-red-400 text-xs leading-relaxed">
+                  This cannot be undone. All messages in this conversation will be permanently deleted.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={deleting}
+                  className="flex-1 bg-[#1E2028] border border-[#2A2D38] hover:border-[#333644] text-[#B0B3C6] hover:text-[#E8E8F0] py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer disabled:opacity-50"
+                >
+                  Keep it
+                </button>
+                <button
+                  onClick={confirmDeleteSession}
+                  disabled={deleting}
+                  className="flex-1 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-xl text-sm transition-all cursor-pointer"
+                >
+                  {deleting ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
